@@ -353,6 +353,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestTerrain
       objectReference: {fileID: 0}
+    - target: {fileID: 6214403380983851691, guid: 5393027dae1a15b4bb211a7eb24ad069,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: -3920553043307968206, guid: d17b12bd8b1fca148943a54e4705c38b,
+        type: 3}
     - target: {fileID: 7381229079018071112, guid: 5393027dae1a15b4bb211a7eb24ad069,
         type: 3}
       propertyPath: m_LocalScale.z
@@ -1185,7 +1191,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1456268555}
-  m_LocalRotation: {x: 0.3639354, y: -0.000000016026434, z: 0.0000000062619985, w: 0.9314242}
+  m_LocalRotation: {x: 0.36393538, y: 0.000000016026451, z: -0.0000000062620384, w: 0.9314242}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
