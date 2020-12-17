@@ -16,11 +16,6 @@ public class AgentMovement : MonoBehaviour
 
     protected Vector3 moveDirection = Vector3.zero;
 
-    public bool IsGround()
-    {
-        return characterController.isGrounded;
-    }
-
     protected float desiredRotationAngler = 0;
 
     int inputVerticalDirection = 0;
@@ -28,10 +23,19 @@ public class AgentMovement : MonoBehaviour
     bool isJumping = false;
     bool finishedJumping = true;
 
+    private bool temporaryMovementTrigger = false;
+    private Quaternion endRotationY;
+    private float temporaryDisiredRotationAngle;
+
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         agentAnimations = GetComponent<HumanoidAnimations>();
+    }
+
+    public bool IsGround()
+    {
+        return characterController.isGrounded;
     }
 
     public void HandleMovement(Vector2 input)
@@ -40,6 +44,7 @@ public class AgentMovement : MonoBehaviour
         {
             if (input.y != 0)
             {
+                temporaryMovementTrigger = false;
                 if (input.y > 0)
                 {
                     inputVerticalDirection = Mathf.CeilToInt(input.y);
@@ -52,8 +57,34 @@ public class AgentMovement : MonoBehaviour
             }
             else
             {
-                agentAnimations.SetMovementFloat(0);
-                moveDirection = Vector3.zero;
+                if(input.x != 0)
+                {
+                    if(temporaryMovementTrigger == false)
+                    {
+                        temporaryMovementTrigger = true;
+
+                        int directionParameter = input.x > 0 ? 1 : -1;
+                        if(directionParameter > 0)
+                        {
+                            temporaryDisiredRotationAngle = 90;
+                        }
+                        else
+                        {
+                            temporaryDisiredRotationAngle = -90;
+                        }
+                        endRotationY = Quaternion.Euler(transform.localEulerAngles) * Quaternion.Euler(Vector3.up*temporaryDisiredRotationAngle);
+                    }
+                    inputVerticalDirection = 1;
+                    moveDirection = input.y * transform.forward * movementSpeed;
+
+                }
+                else
+                {
+                    temporaryMovementTrigger = false;
+                    agentAnimations.SetMovementFloat(0);
+                    moveDirection = Vector3.zero;
+                }
+                
             }
         }
 
@@ -62,6 +93,10 @@ public class AgentMovement : MonoBehaviour
 
     public void HandleMovementDirection(Vector3 input)
     {
+        if (temporaryMovementTrigger)
+        {
+            return;
+        }
         desiredRotationAngler = Vector3.Angle(transform.forward, input);
         var crossProduct = Vector3.Cross(transform.forward, input).y;
         if(crossProduct < 0)
@@ -82,10 +117,17 @@ public class AgentMovement : MonoBehaviour
     {
         if (characterController.isGrounded)
         {
-            if (moveDirection.magnitude > 0)
+            if (moveDirection.magnitude > 0 && finishedJumping)
             {
                 var animationSpeedMultiplier = agentAnimations.SetCorrectAnimation(desiredRotationAngler, angleRotationThreshold, inputVerticalDirection);
-                RotateAgent();
+                if (temporaryMovementTrigger == false)
+                {
+                    RotateAgent();
+                }
+                else
+                {
+                    RotateTemp();
+                }
                 moveDirection *= animationSpeedMultiplier;
             }
         }
@@ -99,6 +141,15 @@ public class AgentMovement : MonoBehaviour
             agentAnimations.TriggerJumpAnimation();
         }
         characterController.Move(moveDirection * Time.deltaTime);
+    }
+
+    private void RotateTemp()
+    {
+        desiredRotationAngler = Quaternion.Angle(transform.rotation,endRotationY);
+        if(desiredRotationAngler > angleRotationThreshold || desiredRotationAngler < -angleRotationThreshold)
+        {
+            transform.localRotation = Quaternion.RotateTowards(transform.localRotation, endRotationY, Time.deltaTime * rotationSpeed * 100);
+        }
     }
 
     private void RotateAgent()

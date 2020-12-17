@@ -5,10 +5,11 @@ using UnityEngine;
 public class MovementState : BaseState
 {
     float fallingDelay = 0;
+    float defaultFallingDelay = 0.2f;
     public override void EnterState(AgentController controller)
     {
         base.EnterState(controller);
-        fallingDelay = 0.2f;
+        fallingDelay = defaultFallingDelay;
     }
 
     public override void HandleMovement(Vector2 input)
@@ -42,6 +43,10 @@ public class MovementState : BaseState
                 return;
             }
             controllerReference.TransitionToState(controllerReference.fallingState);
+        }
+        else
+        {
+            fallingDelay = defaultFallingDelay;
         }
     }
 }
