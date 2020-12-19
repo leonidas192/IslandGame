@@ -18,5 +18,13 @@ public class BaseState : MonoBehaviour
 
     public virtual void HandleJumpInput() { }
 
+    public virtual void HandleInventoryInput() { }
+
+    public virtual void HandleHotBarInput(int hotbarkey)
+    {
+        Debug.Log(hotbarkey);
+
+    }
+
     public virtual void Update() { }
 }
