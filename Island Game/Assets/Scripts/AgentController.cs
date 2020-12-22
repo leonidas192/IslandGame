@@ -31,8 +31,9 @@ public class AgentController : MonoBehaviour
     private void AssignInputListeners()
     {
         input.OnJump += HandleJump;
-        input.OnHotbarKey += HandleHotBarInput;
-        input.OnToogleInventory += HandleInventoryInput;
+        input.OnHotbarKey += HandleHotbarInput;
+        input.OnToggleInventory += HandleInventoryInput;
+
     }
 
     private void HandleJump()
@@ -45,9 +46,9 @@ public class AgentController : MonoBehaviour
         currentState.HandleInventoryInput();
     }
 
-    private void HandleHotBarInput(int hotbarkey)
+    private void HandleHotbarInput(int hotbarkey)
     {
-        currentState.HandleHotBarInput(hotbarkey);       
+        currentState.HandleHotbarInput(hotbarkey);
     }
 
     private void Update()

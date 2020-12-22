@@ -14,18 +14,20 @@ public class AgentMovement : MonoBehaviour
 
     public int angleRotationThreshold;
 
-    protected Vector3 moveDirection = Vector3.zero;
+    public Vector3 moveDirection = Vector3.zero;
 
-    protected float desiredRotationAngler = 0;
+    protected float desiredRotationAngle = 0;
 
     int inputVerticalDirection = 0;
 
     bool isJumping = false;
     bool finishedJumping = true;
 
-    private bool temporaryMovementTrigger = false;
+    private bool temporareyMovementTriggered = false;
     private Quaternion endRotationY;
-    private float temporaryDisiredRotationAngle;
+    private float temporaryDesiredRotationAngle;
+
+
 
     private void Start()
     {
@@ -44,7 +46,7 @@ public class AgentMovement : MonoBehaviour
         {
             if (input.y != 0)
             {
-                temporaryMovementTrigger = false;
+                temporareyMovementTriggered = false;
                 if (input.y > 0)
                 {
                     inputVerticalDirection = Mathf.CeilToInt(input.y);
@@ -59,28 +61,29 @@ public class AgentMovement : MonoBehaviour
             {
                 if(input.x != 0)
                 {
-                    if(temporaryMovementTrigger == false)
+                    if(temporareyMovementTriggered == false)
                     {
-                        temporaryMovementTrigger = true;
+                        temporareyMovementTriggered = true;
 
                         int directionParameter = input.x > 0 ? 1 : -1;
                         if(directionParameter > 0)
                         {
-                            temporaryDisiredRotationAngle = 90;
+                            temporaryDesiredRotationAngle = 90;
                         }
                         else
                         {
-                            temporaryDisiredRotationAngle = -90;
+                            temporaryDesiredRotationAngle = -90;
                         }
-                        endRotationY = Quaternion.Euler(transform.localEulerAngles) * Quaternion.Euler(Vector3.up*temporaryDisiredRotationAngle);
+                        endRotationY = Quaternion.Euler(transform.localEulerAngles) * Quaternion.Euler(Vector3.up * temporaryDesiredRotationAngle);
                     }
                     inputVerticalDirection = 1;
-                    moveDirection = input.y * transform.forward * movementSpeed;
+                    moveDirection = transform.forward * movementSpeed;
+
 
                 }
                 else
                 {
-                    temporaryMovementTrigger = false;
+                    temporareyMovementTriggered = false;
                     agentAnimations.SetMovementFloat(0);
                     moveDirection = Vector3.zero;
                 }
@@ -93,15 +96,15 @@ public class AgentMovement : MonoBehaviour
 
     public void HandleMovementDirection(Vector3 input)
     {
-        if (temporaryMovementTrigger)
+        if (temporareyMovementTriggered)
         {
             return;
         }
-        desiredRotationAngler = Vector3.Angle(transform.forward, input);
+        desiredRotationAngle = Vector3.Angle(transform.forward, input);
         var crossProduct = Vector3.Cross(transform.forward, input).y;
         if(crossProduct < 0)
         {
-            desiredRotationAngler *= -1;
+            desiredRotationAngle *= -1;
         }
     }
 
@@ -119,8 +122,8 @@ public class AgentMovement : MonoBehaviour
         {
             if (moveDirection.magnitude > 0 && finishedJumping)
             {
-                var animationSpeedMultiplier = agentAnimations.SetCorrectAnimation(desiredRotationAngler, angleRotationThreshold, inputVerticalDirection);
-                if (temporaryMovementTrigger == false)
+                var animationSpeedMultiplier = agentAnimations.SetCorrectAnimation(desiredRotationAngle, angleRotationThreshold, inputVerticalDirection);
+                if (temporareyMovementTriggered == false)
                 {
                     RotateAgent();
                 }
@@ -128,6 +131,7 @@ public class AgentMovement : MonoBehaviour
                 {
                     RotateTemp();
                 }
+                
                 moveDirection *= animationSpeedMultiplier;
             }
         }
@@ -145,8 +149,8 @@ public class AgentMovement : MonoBehaviour
 
     private void RotateTemp()
     {
-        desiredRotationAngler = Quaternion.Angle(transform.rotation,endRotationY);
-        if(desiredRotationAngler > angleRotationThreshold || desiredRotationAngler < -angleRotationThreshold)
+        desiredRotationAngle = Quaternion.Angle(transform.rotation, endRotationY);
+        if(desiredRotationAngle > angleRotationThreshold || desiredRotationAngle < -angleRotationThreshold)
         {
             transform.localRotation = Quaternion.RotateTowards(transform.localRotation, endRotationY, Time.deltaTime * rotationSpeed * 100);
         }
@@ -154,15 +158,16 @@ public class AgentMovement : MonoBehaviour
 
     private void RotateAgent()
     {
-        if(desiredRotationAngler > angleRotationThreshold || desiredRotationAngler < -angleRotationThreshold)
+        if(desiredRotationAngle > angleRotationThreshold || desiredRotationAngle < -angleRotationThreshold)
         {
-            transform.Rotate(Vector3.up * desiredRotationAngler * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.up * desiredRotationAngle * rotationSpeed * Time.deltaTime);
         }
     }
 
-    public void StopMovementImmediatelly()
+    public void StpMovementImmediatelly()
     {
         moveDirection = Vector3.zero;
+        finishedJumping = false;
     }
 
     public bool HasFinishedJumping()
@@ -172,7 +177,7 @@ public class AgentMovement : MonoBehaviour
 
     public void SetFinishedJumping(bool value)
     {
-        finishedJumping = true;
+        finishedJumping = value;
     }
 
     public void SetFinishedJumpingTrue()
