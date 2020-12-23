@@ -5,14 +5,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemPanelHelper : MonoBehaviour,IPointerClickHandler
+public class ItemPanelHelper : MonoBehaviour,IPointerClickHandler,IBeginDragHandler,IDragHandler,
+IEndDragHandler, IDropHandler
 {
     public Action<int, bool> OnClickEvent;
+
+    public Action<PointerEventData> DragStopCallback, DragContinueCallback;
+    public Action<PointerEventData, int> DragStartCallback, DropCallback;  
 
     public Image itemImage;
     [SerializeField]
     private Text nameText, countText;
-    public String itemName, itemCount;
+    public String itemName;
+    public int itemCount;
     public bool isEmpty = true;
     public Outline outline;
     public bool isHotbarItem = false;
@@ -32,10 +37,17 @@ public class ItemPanelHelper : MonoBehaviour,IPointerClickHandler
     public void SetInventoryUIElement(string name,int count,Sprite image)
     {
         itemName = name;
-        itemCount = count + "";
+        itemCount = count;
         if (!isHotbarItem)
             nameText.text = itemName;
-        countText.text = itemCount;
+        if(count<0){
+            countText.text = " ";
+        }
+        else
+        {
+            countText.text = itemCount+"";
+        }
+        
         isEmpty = false;
         SetImageSprite(image);
 
@@ -55,8 +67,8 @@ public class ItemPanelHelper : MonoBehaviour,IPointerClickHandler
     private void ClearImage()
     {
         itemName = "";
-        itemCount = "";
-        countText.text = itemCount;
+        itemCount = -1;
+        countText.text = "";
         if (!isHotbarItem)
             nameText.text = itemName;
         ResetImage();
@@ -77,5 +89,27 @@ public class ItemPanelHelper : MonoBehaviour,IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         OnClickEvent.Invoke(GetInstanceID(), isEmpty);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData){
+        if(isEmpty)
+            return;
+        DragStartCallback.Invoke(eventData,GetInstanceID());
+    }
+    
+    public void OnDrag(PointerEventData eventData){
+        if(isEmpty)
+            return;
+        DragContinueCallback.Invoke(eventData);
+    }
+    
+    public void OnEndDrag(PointerEventData eventData){
+        if(isEmpty)
+            return;
+        DragStopCallback.Invoke(eventData);
+    }
+
+    public void OnDrop(PointerEventData eventData){
+        DropCallback.Invoke(eventData,GetInstanceID());
     }
 }

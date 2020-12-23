@@ -4,6 +4,7 @@ using UnityEngine;
 using Inventory;
 using System;
 using SVS.InventorySystem;
+using UnityEngine.EventSystems;
 
 public class InventorySystem : MonoBehaviour
 {
@@ -22,17 +23,26 @@ public class InventorySystem : MonoBehaviour
     private void Start()
     {
         inventoryData = new InventorySystemData(playerStorageSize, uiInventory.HotbarElementsCount);
-        ItemData artificialItem = new ItemData(0,10, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
+        inventoryData.updateHotbarCallback += UpdateHotbarHandler;
+        ItemData artificialItem = new ItemData(0,20, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
+        ItemData artificialItem1 = new ItemData(0,90, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
         AddToStorage(artificialItem);
+        AddToStorage(artificialItem1);
         var hotbarUiElementsList = uiInventory.GetUiElementsForHotbar();
 
         for (int i = 0; i < hotbarUiElementsList.Count; i++)
         {
             inventoryData.AddHotbarUIElement(hotbarUiElementsList[i].GetInstanceID());
             hotbarUiElementsList[i].OnClickEvent += UseHotbarItemHandler;
+            hotbarUiElementsList[i].DragContinueCallback +=DraggingHandler;
+            hotbarUiElementsList[i].DragStartCallback += DragStartHandler;
+            hotbarUiElementsList[i].DragStopCallback += DragStopHandler;
+            hotbarUiElementsList[i].DropCallback += DropHandler;
         }
     }
-
+    private void UpdateHotbarHandler(){
+        Debug.Log("updating hotbar");
+    }
     private void UseHotbarItemHandler(int ui_id, bool isEmpty)
     {
         Debug.Log("Using Hotbar ");
@@ -83,15 +93,79 @@ public class InventorySystem : MonoBehaviour
         foreach (var uiItemElement in uiInventory.GetUiElementsForInventory())
         {
             uiItemElement.OnClickEvent += UiElementSelectedHandler;
+            uiItemElement.DragContinueCallback += DraggingHandler;
+            uiItemElement.DragStartCallback += DragStartHandler;
+            uiItemElement.DragStopCallback += DragStopHandler;
+            uiItemElement.DropCallback += DropHandler;
         }
     }
+    private void DropHandler(PointerEventData eventData,int droppedItemID){
+        if(uiInventory.Draggableitem != null){
+            var draggedItemID = uiInventory.DraggableItemPanel.GetInstanceID();
+            if(draggedItemID == droppedItemID)
+            {
+                return;
+            }
+            DeselectCurrentItem();
+            if(uiInventory.CheckItemInInventory(draggedItemID)){
+                if(uiInventory.CheckItemInInventory(droppedItemID)){
+                    DroppingItemsInventoryToInventory(droppedItemID,draggedItemID);
+                }
+                else
+                {
+                    DroppingItemsInventoryToHotbar(droppedItemID,draggedItemID);
+                }
+            }
+            else
+            {
+                if(uiInventory.CheckItemInInventory(droppedItemID)){
+                    DroppingItemsHotbarToInventory(droppedItemID,draggedItemID);
+                }
+                else
+                {
+                    DroppingItemsHotbarToHotbar(droppedItemID,draggedItemID);
+                }
+                
+            }
+        }
+    }
+    private void DroppingItemsHotbarToHotbar(int droppedItemID,int draggedItemID){
+        uiInventory.SwapUiItemHotbarToHotbar(droppedItemID, draggedItemID);
+        inventoryData.SwapStorageItemsInsideHotbar(droppedItemID, draggedItemID);
+    }
+    private void DroppingItemsHotbarToInventory(int droppedItemID,int draggedItemID){
+        uiInventory.SwapUiItemHotbarToInventory(droppedItemID, draggedItemID);
+        inventoryData.SwapStorageHotbarToInventory(droppedItemID, draggedItemID);
+    }
+    private void  DroppingItemsInventoryToHotbar(int droppedItemID,int draggedItemID){
+       uiInventory.SwapUiItemInventoryToHotbar(droppedItemID, draggedItemID);
+        inventoryData.SwapStorageInventoryToHotbar(droppedItemID, draggedItemID);
+    }
+    private void DroppingItemsInventoryToInventory(int droppedItemID,int draggedItemID){
+        uiInventory.SwapUiItemInventoryToInventory(droppedItemID, draggedItemID);
+        inventoryData.SwapStorageItemsInsideInventory(droppedItemID, draggedItemID);
+    }
+    private void DeselectCurrentItem(){
+        inventoryData.ResetSelectedItem();
+    }
+    private void DragStopHandler(PointerEventData eventData){
+        uiInventory.DestroyDraggedObject();
+    }
+    private void DragStartHandler(PointerEventData eventData,int ui_id){
+        uiInventory.DestroyDraggedObject();
+        uiInventory.CreateDraggableItem(ui_id);
+    }
+    private void DraggingHandler(PointerEventData eventData){
+        uiInventory.MoveDraggableItem(eventData);
+    }
+    
 
     private void UiElementSelectedHandler(int ui_id, bool isEmpty)
     {
         Debug.Log("Selecting inventory items");
         if (isEmpty)
             return;
-        inventoryData.ResetSelectedItem();
+        DeselectCurrentItem();
         inventoryData.SetSelectedItemTo(ui_id);
         
     }

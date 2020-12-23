@@ -77,5 +77,80 @@ namespace Inventory {
         {
             return storagePlayer.GetItemsData();
         }
+        internal void SwapStorageItemsInsideInventory(int droppedItemID, int draggedItemID){
+            var storage_IdDraggedItem = inventoryUIElementIdList.IndexOf(draggedItemID);
+            var storagedata_IdDraggedItem = storagePlayer.GetItemData(storage_IdDraggedItem);
+            var storage_IdDroppedItem = inventoryUIElementIdList.IndexOf(droppedItemID);
+
+            if(CheckedItemForUiStorageNotEmpty(droppedItemID)){
+                
+                var storagedata_IdDroppedItem = storagePlayer.GetItemData(storage_IdDroppedItem);
+
+                storagePlayer.SwapItemWithIndexFor(storage_IdDraggedItem, storagedata_IdDroppedItem);
+                storagePlayer.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+            }
+            else{
+                storagePlayer.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+                storagePlayer.RemoveItemOfIndex(storage_IdDraggedItem);
+            }
+        }
+        private bool CheckedItemForUiStorageNotEmpty(int ui_id){
+            return inventoryUIElementIdList.Contains(ui_id) && storagePlayer.CheckIfItemIsEmpty
+            (inventoryUIElementIdList.IndexOf(ui_id)) == false;
+        }
+        internal void SwapStorageItemsInsideHotbar(int droppedItemID, int draggedItemID){
+            var storage_IdDraggedItem = hotbarUIElementIdList.IndexOf(draggedItemID);
+            var storagedata_IdDraggedItem = storageHotbar.GetItemData(storage_IdDraggedItem);
+            var storage_IdDroppedItem = hotbarUIElementIdList.IndexOf(droppedItemID);
+
+            if(CheckedItemForHotbarStorageNotEmpty(droppedItemID)){
+                
+                var storagedata_IdDroppedItem = storageHotbar.GetItemData(storage_IdDroppedItem);
+
+                storageHotbar.SwapItemWithIndexFor(storage_IdDraggedItem, storagedata_IdDroppedItem);
+                storageHotbar.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+            }
+            else{
+                storageHotbar.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+                storageHotbar.RemoveItemOfIndex(storage_IdDraggedItem);
+            }
+        }
+        private bool CheckedItemForHotbarStorageNotEmpty(int ui_id){
+            return storageHotbar.CheckIfItemIsEmpty(hotbarUIElementIdList.IndexOf(ui_id)) == false;
+        }
+        internal void SwapStorageHotbarToInventory(int droppedItemID, int draggedItemID){
+            var storage_IdDraggedItem = hotbarUIElementIdList.IndexOf(draggedItemID);
+            var storagedata_IdDraggedItem = storageHotbar.GetItemData(storage_IdDraggedItem);
+            var storage_IdDroppedItem = inventoryUIElementIdList.IndexOf(droppedItemID);
+
+            if(CheckedItemForUiStorageNotEmpty(droppedItemID)){
+                
+                var storagedata_IdDroppedItem = storagePlayer.GetItemData(storage_IdDroppedItem);
+
+                storageHotbar.SwapItemWithIndexFor(storage_IdDraggedItem, storagedata_IdDroppedItem);
+                storagePlayer.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+            }
+            else{
+                storagePlayer.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+                storageHotbar.RemoveItemOfIndex(storage_IdDraggedItem);
+            }
+        }
+        internal void SwapStorageInventoryToHotbar(int droppedItemID, int draggedItemID){
+            var storage_IdDraggedItem = inventoryUIElementIdList.IndexOf(draggedItemID);
+            var storagedata_IdDraggedItem = storagePlayer.GetItemData(storage_IdDraggedItem);
+            var storage_IdDroppedItem = hotbarUIElementIdList.IndexOf(droppedItemID);
+
+            if(CheckedItemForHotbarStorageNotEmpty(droppedItemID)){
+                
+                var storagedata_IdDroppedItem = storageHotbar.GetItemData(storage_IdDroppedItem);
+
+                storagePlayer.SwapItemWithIndexFor(storage_IdDraggedItem, storagedata_IdDroppedItem);
+                storageHotbar.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+            }
+            else{
+                storageHotbar.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
+                storagePlayer.RemoveItemOfIndex(storage_IdDraggedItem);
+            }
+        }
     }
 }
