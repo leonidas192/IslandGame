@@ -11,14 +11,13 @@ public class JumpState : BaseState
         base.EnterState(controller);
         delay = 0.2f;
         landingTriggerd = false;
-        controllerReference.agentAnimations.ResetTriggerLandingAnimation();
         controllerReference.movement.HandleJump();
     }
 
     public override void Update()
     {
         base.Update();
-        if (delay > 0)
+        if(delay > 0)
         {
             delay -= Time.deltaTime;
             return;
@@ -35,6 +34,6 @@ public class JumpState : BaseState
                 controllerReference.TransitionToState(controllerReference.movementState);
             }
         }
-
+        
     }
 }

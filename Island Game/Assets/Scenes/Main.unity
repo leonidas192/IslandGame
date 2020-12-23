@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 257bb7096af30d442a27ec71059719fe,
     type: 2}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -811,8 +811,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 806808031}
   m_HandleRect: {fileID: 806808030}
   m_Direction: 2
-  m_Value: 1.0000004
-  m_Size: 0.7312933
+  m_Value: 0.9999999
+  m_Size: 0.73129326
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3152,7 +3152,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 631073147}
-  m_LocalRotation: {x: 0.3826835, y: 0.000000040416516, z: -0.000000016741073, w: 0.92387956}
+  m_LocalRotation: {x: 0.38268343, y: -0.000000040416516, z: 0.000000016741069, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 10.09, z: 0.46000004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4396,6 +4396,52 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1230929988
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1230929990}
+  - component: {fileID: 1230929989}
+  m_Layer: 0
+  m_Name: ItemDataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1230929989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1230929988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a900796db9c67a42b18ac02b38f2d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemSoList:
+  - {fileID: 11400000, guid: 0bbde5c822963da408d7a5fbff22f23b, type: 2}
+  - {fileID: 11400000, guid: 74899f932952a604a9e98962a63df067, type: 2}
+--- !u!4 &1230929990
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1230929988}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1677.05, y: 643.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1234677506
 GameObject:
   m_ObjectHideFlags: 3
@@ -4462,7 +4508,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1234677506}
-  m_LocalRotation: {x: 0.38268346, y: 0.000000029586943, z: -0.000000012255313, w: 0.92387956}
+  m_LocalRotation: {x: 0.38268343, y: -0.000000010829575, z: 0.000000004485756, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4639,6 +4685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481662551f03cba4b8e42858aa65c0cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerStorageSize: 20
 --- !u!114 &1292637816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4652,6 +4699,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryGeneralPanel: {fileID: 1678386795}
+  hotbarPanel: {fileID: 23755402}
+  storagePanel: {fileID: 839588271}
+  storagePrefab: {fileID: 9171746358767071163, guid: 2060e00b73967fb49884dc81e8bc7ab4,
+    type: 3}
 --- !u!4 &1292637817
 Transform:
   m_ObjectHideFlags: 0
@@ -5296,7 +5347,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1456268555}
-  m_LocalRotation: {x: 0.3639354, y: -0.000000016025982, z: 0.0000000062608416, w: 0.9314242}
+  m_LocalRotation: {x: 0.36393538, y: 0.00000001602691, z: -0.000000006263203, w: 0.9314242}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -8836,6 +8887,7 @@ MonoBehaviour:
   rotationSpeed: 8
   jumpSpeed: 4.4
   angleRotationThreshold: 10
+  moveDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &8296172669156150490
 MonoBehaviour:
   m_ObjectHideFlags: 0

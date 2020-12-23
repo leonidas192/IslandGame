@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseState : MonoBehaviour
+public abstract class BaseState
 {
-    //reference AgentController to access input,movement,to other script
     protected AgentController controllerReference;
-    //preparing anyting before start doing some activities in the state
+
     public virtual void EnterState(AgentController controller)
     {
         this.controllerReference = controller;
     }
-    //method that responsible for handling input
+
     public virtual void HandleMovement(Vector2 input) { }
 
     public virtual void HandleCameraDirection(Vector3 input) { }
@@ -20,11 +19,11 @@ public class BaseState : MonoBehaviour
 
     public virtual void HandleInventoryInput() { }
 
-    public virtual void HandleHotBarInput(int hotbarkey)
+    public virtual void HandleHotbarInput(int hotbarKey) 
     {
-        Debug.Log(hotbarkey);
-
+        Debug.Log(hotbarKey);
     }
 
     public virtual void Update() { }
+
 }

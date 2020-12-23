@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MovementState : BaseState
 {
-    float fallingDelay = 0;
     float defaultFallingDelay = 0.2f;
+    float fallingDelay = 0;
     public override void EnterState(AgentController controller)
     {
         base.EnterState(controller);
