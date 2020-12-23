@@ -41,7 +41,20 @@ public class InventorySystem : MonoBehaviour
         }
     }
     private void UpdateHotbarHandler(){
-        Debug.Log("updating hotbar");
+        var uiElementList = uiInventory.GetUiElementsForHotbar();
+        var hotbarItemList = inventoryData.GetItemsDataForHotbar();
+        for (int i = 0; i < uiElementList.Count; i++)
+        {
+            var uiItemElement = uiElementList[i];
+            uiItemElement.ClearImage();
+            var itemData = hotbarItemList[i];
+            if (itemData.IsNull == false)
+            {
+                var itemName = ItemDataManager.instance.GetItemName(itemData.ID);
+                var itemSprite = ItemDataManager.instance.GetItemSprite(itemData.ID);
+                uiItemElement.SetInventoryUIElement(itemName, itemData.Count, itemSprite);
+            }
+        }
     }
     private void UseHotbarItemHandler(int ui_id, bool isEmpty)
     {

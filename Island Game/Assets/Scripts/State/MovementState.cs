@@ -36,9 +36,16 @@ public class MovementState : BaseState
         controllerReference.TransitionToState(controllerReference.inventoryState);
     }
 
+    public override void HandlePrimaryAction()
+    {
+        base.HandlePrimaryAction();
+        controllerReference.TransitionToState(controllerReference.interactState);
+    }
+
     public override void Update()
     {
         base.Update();
+        controllerReference.detectionSystem.PerformDetection(controllerReference.input.MovementDirectionVector);
         HandleMovement(controllerReference.input.MovementInputVector);
         HandleCameraDirection(controllerReference.input.MovementDirectionVector);
         if(controllerReference.movement.IsGround() == false)

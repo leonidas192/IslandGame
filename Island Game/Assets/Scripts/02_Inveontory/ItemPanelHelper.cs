@@ -64,7 +64,7 @@ IEndDragHandler, IDropHandler
         itemImage.sprite = image;
     }
 
-    private void ClearImage()
+    public void ClearImage()
     {
         itemName = "";
         itemCount = -1;

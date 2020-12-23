@@ -11,11 +11,14 @@ public class AgentController : MonoBehaviour
 
     public InventorySystem inventorySystem;
 
+    public DetectionSystem detectionSystem;
+
     BaseState currentState;
     public readonly BaseState movementState = new MovementState();
     public readonly BaseState jumpState = new JumpState();
     public readonly BaseState fallingState = new FallingState();
     public readonly BaseState inventoryState = new InventoryState();
+    public readonly BaseState interactState = new InteractState();
 
     private void OnEnable()
     {
@@ -25,6 +28,7 @@ public class AgentController : MonoBehaviour
         currentState = movementState;
         currentState.EnterState(this);
         AssignInputListeners();
+        detectionSystem = GetComponent<DetectionSystem>();
 
     }
 
@@ -33,7 +37,18 @@ public class AgentController : MonoBehaviour
         input.OnJump += HandleJump;
         input.OnHotbarKey += HandleHotbarInput;
         input.OnToggleInventory += HandleInventoryInput;
+        input.OnPrimaryAction += HandlePrimaryInput;
+        input.OnSecondaryAction += HandleSecondaryInput;
+    }
 
+    private void HandleSecondaryInput()
+    {
+        currentState.HandleSecondaryAction();
+    }
+
+    private void HandlePrimaryInput()
+    {
+        currentState.HandlePrimaryAction();
     }
 
     private void HandleJump()
@@ -66,5 +81,14 @@ public class AgentController : MonoBehaviour
     {
         currentState = state;
         currentState.EnterState(this);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position + input.MovementDirectionVector, detectionSystem.detectionRadius);
+        }
     }
 }
