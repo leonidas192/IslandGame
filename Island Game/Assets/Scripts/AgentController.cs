@@ -13,6 +13,8 @@ public class AgentController : MonoBehaviour
 
     public DetectionSystem detectionSystem;
 
+    public GameManager gameManager;
+
     BaseState currentState;
     public readonly BaseState movementState = new MovementState();
     public readonly BaseState jumpState = new JumpState();
@@ -29,6 +31,7 @@ public class AgentController : MonoBehaviour
         currentState.EnterState(this);
         AssignInputListeners();
         detectionSystem = GetComponent<DetectionSystem>();
+        gameManager = FindObjectOfType<GameManager>();
 
     }
 
@@ -39,7 +42,13 @@ public class AgentController : MonoBehaviour
         input.OnToggleInventory += HandleInventoryInput;
         input.OnPrimaryAction += HandlePrimaryInput;
         input.OnSecondaryAction += HandleSecondaryInput;
+        input.OnMenuToggledKey += HandleMenu;
     }
+    private void HandleMenu(){
+        currentState.HandleMenuInput();
+        gameManager.ToggleGameMenu();
+    }
+
 
     private void HandleSecondaryInput()
     {

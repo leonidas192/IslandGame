@@ -238,5 +238,42 @@ namespace Inventory {
                 return null;
             }
         }
+
+        public SavedItemSystemData GetDataToSave(){
+            return new SavedItemSystemData{
+                playerStorageItems = storagePlayer.GetDataToSave(),
+                hotbarStorageItems = storageHotbar.GetDataToSave(),
+                playerStorageSize = storagePlayer.StorageLimit
+            };
+        }
+
+        public void LoadData(SavedItemSystemData dataToLoad){
+            storagePlayer = new Storage (dataToLoad.playerStorageSize);
+            storageHotbar.ClearStorage();
+            foreach (var item in dataToLoad.playerStorageItems)
+            {
+                if(item.IsNull==false){
+                    storagePlayer.SwapItemWithIndexFor(item.StorageIndex,item);
+                }
+            }
+            foreach (var item in dataToLoad.hotbarStorageItems)
+            {
+                if(item.IsNull==false){
+                    storageHotbar.SwapItemWithIndexFor(item.StorageIndex,item);
+                }
+            }
+            updateHotbarCallback.Invoke();
+        }
+    }
+    [Serializable]
+    public struct InventorySaveData{
+        public List <ItemData> playerStorageItems, gotbarStorageItems;
+        public int playerStorageSize;
+    }
+    [Serializable]
+    public struct SavedItemSystemData{
+        public List<ItemData> playerStorageItems;
+        public List<ItemData> hotbarStorageItems;
+        public int playerStorageSize;
     }
 }

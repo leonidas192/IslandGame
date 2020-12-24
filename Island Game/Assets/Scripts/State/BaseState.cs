@@ -36,4 +36,7 @@ public abstract class BaseState
     {
        
     }
+    public virtual void HandleMenuInput(){
+        
+    }
 }

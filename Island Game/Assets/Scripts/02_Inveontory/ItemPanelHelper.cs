@@ -15,7 +15,7 @@ IEndDragHandler, IDropHandler
 
     public Image itemImage;
     [SerializeField]
-    private Text nameText, countText;
+    private Text nameText = null, countText = null;
     public String itemName;
     public int itemCount;
     public bool isEmpty = true;
