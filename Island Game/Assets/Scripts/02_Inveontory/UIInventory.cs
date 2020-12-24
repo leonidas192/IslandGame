@@ -11,10 +11,12 @@ public class UIInventory : MonoBehaviour
 {
     public GameObject inventoryGeneralPanel;
 
+    public UIStorageButtonsHelper uiStorageButtonsHelper;
+
     public bool IsInventoryVisible { get => inventoryGeneralPanel.activeSelf; }
-    public int HotbarElementsCount { get=>hotbarUIItems.Count;}
-    public RectTransform Draggableitem{get => draggableitem;}
-    public ItemPanelHelper DraggableItemPanel{get => draggableItemPanel;}
+    public int HotbarElementsCount { get => hotbarUIItems.Count; }
+    public RectTransform Draggableitem { get => draggableitem; }
+    public ItemPanelHelper DraggableItemPanel { get => draggableItemPanel; }
 
     public Dictionary<int, ItemPanelHelper> inventoryUIItems = new Dictionary<int, ItemPanelHelper>();
     public Dictionary<int, ItemPanelHelper> hotbarUIItems = new Dictionary<int, ItemPanelHelper>();
@@ -26,7 +28,7 @@ public class UIInventory : MonoBehaviour
         return hotbarUIItems.Values.ToList();
     }
 
-    public GameObject hotbarPanel,storagePanel;
+    public GameObject hotbarPanel, storagePanel;
 
     public GameObject storagePrefab;
 
@@ -52,7 +54,7 @@ public class UIInventory : MonoBehaviour
 
     public void ToggleUI()
     {
-        if(inventoryGeneralPanel.activeSelf == false)
+        if (inventoryGeneralPanel.activeSelf == false)
         {
             inventoryGeneralPanel.SetActive(true);
         }
@@ -61,6 +63,55 @@ public class UIInventory : MonoBehaviour
             inventoryGeneralPanel.SetActive(false);
             DestroyDraggedObject();
         }
+        uiStorageButtonsHelper.HideAllButtons();
+    }
+
+    internal int GetHotbarElementUiIDWithIndex(int ui_index)
+    {
+        if(listOfHotbarElementID.Count  <= ui_index)
+        {
+            return -1;
+        }
+        return listOfHotbarElementID[ui_index];
+    }
+
+    internal void ClearItemElement(int ui_id)
+    {
+        GetItemFromCorrectDictionary(ui_id).ClearImage();
+    }
+
+    private ItemPanelHelper GetItemFromCorrectDictionary(int ui_id)
+    {
+        if (inventoryUIItems.ContainsKey(ui_id))
+        {
+            return inventoryUIItems[ui_id];
+        }
+        else if (hotbarUIItems.ContainsKey(ui_id))
+        {
+            return hotbarUIItems[ui_id];
+        }
+        return null;
+    }
+
+    public void AssignUseButtonHandler(Action handler)
+    {
+        uiStorageButtonsHelper.OnUseBtnClick += handler;
+    }
+
+    internal void updateItemInfo(int ui_id, int count)
+    {
+        GetItemFromCorrectDictionary(ui_id).UpdateCount(count);
+    }
+
+    public void AssignDropButtonHandler(Action handler)
+    {
+        uiStorageButtonsHelper.OnDropBtnClick += handler;
+    }
+
+    public void ToggleItemButtons(bool useBtn, bool dropButton)
+    {
+        uiStorageButtonsHelper.ToggleGroupButton(dropButton);
+        uiStorageButtonsHelper.ToggleUseButton(useBtn);
     }
 
     internal void PrepareInventoryItems(int playerStorageLimit)
@@ -168,5 +219,23 @@ public class UIInventory : MonoBehaviour
     
         hotbarUIItems[droppedItemID].SwapWithData(tempName,tempCount,tempSprite,tempisEmpty);
         DestroyDraggedObject();
+    }
+
+    public void HighlightSelectedItem(int ui_id)
+    {
+        if (hotbarUIItems.ContainsKey(ui_id))
+        {
+            return;
+        }
+        inventoryUIItems[ui_id].ToggleHoghlight(true);
+    }
+
+    public void DisableHighlightForSelectedItem(int ui_id)
+    {
+        if (hotbarUIItems.ContainsKey(ui_id))
+        {
+            return;
+        }
+        inventoryUIItems[ui_id].ToggleHoghlight(false);
     }
 }

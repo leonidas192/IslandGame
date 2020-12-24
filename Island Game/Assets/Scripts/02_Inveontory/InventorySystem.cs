@@ -14,6 +14,8 @@ public class InventorySystem : MonoBehaviour
 
     public int playerStorageSize = 20;
 
+    public InteractionManager interactionManager;
+
 
     private void Awake()
     {
@@ -24,10 +26,13 @@ public class InventorySystem : MonoBehaviour
     {
         inventoryData = new InventorySystemData(playerStorageSize, uiInventory.HotbarElementsCount);
         inventoryData.updateHotbarCallback += UpdateHotbarHandler;
-        ItemData artificialItem = new ItemData(0,20, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
-        ItemData artificialItem1 = new ItemData(0,90, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
-        AddToStorage(artificialItem);
-        AddToStorage(artificialItem1);
+        uiInventory.AssignDropButtonHandler(DropHandler);
+        uiInventory.AssignUseButtonHandler(UseInventoryItemHandler);
+
+        //ItemData artificialItem = new ItemData(0,20, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
+        //ItemData artificialItem1 = new ItemData(0,90, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
+        //AddToStorage(artificialItem);
+        //AddToStorage(artificialItem1);
         var hotbarUiElementsList = uiInventory.GetUiElementsForHotbar();
 
         for (int i = 0; i < hotbarUiElementsList.Count; i++)
@@ -40,6 +45,65 @@ public class InventorySystem : MonoBehaviour
             hotbarUiElementsList[i].DropCallback += DropHandler;
         }
     }
+
+    internal void HotbarShortKeyHandler(int hotbarKey)
+    {
+        var ui_index = hotbarKey == 0 ? 9 : hotbarKey - 1;
+        var uiElementID = uiInventory.GetHotbarElementUiIDWithIndex(ui_index);
+        if (uiElementID == -1)
+        {
+            return;
+        }
+        var id = inventoryData.GetItemIdFor(uiElementID);
+        if (id == null)
+            return;
+        var itemData = ItemDataManager.instance.GetItemData(id);
+        UseItem(itemData, uiElementID);
+    }
+
+    private void UseInventoryItemHandler()
+    {
+        var itemData = ItemDataManager.instance.GetItemData(inventoryData.GetItemIdFor(inventoryData.selectedItemUIID));
+        UseItem(itemData, inventoryData.selectedItemUIID);
+    }
+
+    private void UseItem(ItemSO itemData, int ui_id)
+    {
+        if (interactionManager.UseItem(itemData))
+        {
+            inventoryData.TakeOneFromItem(ui_id);
+            if (inventoryData.CheckIfSelectedItemIsEmpty(ui_id))
+            {
+                ClearUIElement(ui_id);
+                inventoryData.RemoveItemFromInventory(ui_id);
+            }
+            else
+            {
+                UpdateUI(ui_id, inventoryData.GetItemCountFor(ui_id));
+            }
+        }
+    }
+
+    private void UpdateUI(int ui_id, int count)
+    {
+        uiInventory.updateItemInfo(ui_id, count);
+    }
+
+    private void DropHandler()
+    {
+        var id = inventoryData.selectedItemUIID;
+        ItemSpawnManager.instance.CreateItemAtPlayersFeet(inventoryData.GetItemIdFor(id), inventoryData.GetItemCountFor(id));
+        ClearUIElement(id);
+        inventoryData.RemoveItemFromInventory(id);
+    }
+
+    private void ClearUIElement(int ui_id)
+    {
+        uiInventory.DisableHighlightForSelectedItem(ui_id);
+        uiInventory.ClearItemElement(ui_id);
+        uiInventory.ToggleItemButtons(false, false);
+    }
+
     private void UpdateHotbarHandler(){
         var uiElementList = uiInventory.GetUiElementsForHotbar();
         var hotbarItemList = inventoryData.GetItemsDataForHotbar();
@@ -58,11 +122,11 @@ public class InventorySystem : MonoBehaviour
     }
     private void UseHotbarItemHandler(int ui_id, bool isEmpty)
     {
-        Debug.Log("Using Hotbar ");
         if (isEmpty)
             return;
-        //throw new NotImplementedException();
-        
+        DeselectCurrentItem();
+        var itemData = ItemDataManager.instance.GetItemData(inventoryData.GetItemIdFor(ui_id));
+        UseItem(itemData, ui_id);
     }
 
     public void ToggleInventory()
@@ -159,6 +223,10 @@ public class InventorySystem : MonoBehaviour
         inventoryData.SwapStorageItemsInsideInventory(droppedItemID, draggedItemID);
     }
     private void DeselectCurrentItem(){
+        if(inventoryData.selectedItemUIID != -1){
+            uiInventory.DisableHighlightForSelectedItem(inventoryData.selectedItemUIID);
+            uiInventory.ToggleItemButtons(false, false);
+        }
         inventoryData.ResetSelectedItem();
     }
     private void DragStopHandler(PointerEventData eventData){
@@ -175,12 +243,12 @@ public class InventorySystem : MonoBehaviour
 
     private void UiElementSelectedHandler(int ui_id, bool isEmpty)
     {
-        Debug.Log("Selecting inventory items");
         if (isEmpty)
             return;
         DeselectCurrentItem();
         inventoryData.SetSelectedItemTo(ui_id);
-        
+        uiInventory.HighlightSelectedItem(ui_id);
+        uiInventory.ToggleItemButtons(ItemDataManager.instance.IsItemUsable(inventoryData.GetItemIdFor(inventoryData.selectedItemUIID)),true);
     }
 
     public int AddToStorage(IInventoryItem item)

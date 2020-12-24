@@ -109,7 +109,18 @@ IEndDragHandler, IDropHandler
         DragStopCallback.Invoke(eventData);
     }
 
+    internal void UpdateCount(int count)
+    {
+        itemCount = count;
+        countText.text = itemCount + "";
+    }
+
     public void OnDrop(PointerEventData eventData){
         DropCallback.Invoke(eventData,GetInstanceID());
+    }
+
+    internal void ToggleHoghlight(bool val)
+    {
+        outline.enabled = val;
     }
 }

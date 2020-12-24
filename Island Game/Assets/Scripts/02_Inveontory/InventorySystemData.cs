@@ -73,6 +73,71 @@ namespace Inventory {
             return countLeft;
         }
 
+        internal bool CheckIfSelectedItemIsEmpty(int ui_id)
+        {
+            if (CheckedItemForHotbarStorageNotEmpty(ui_id))
+            {
+                return storageHotbar.CheckIfItemIsEmpty(hotbarUIElementIdList.IndexOf(ui_id));
+            }
+            else if (CheckedItemForUiStorageNotEmpty(ui_id))
+            {
+                return storagePlayer.CheckIfItemIsEmpty(inventoryUIElementIdList.IndexOf(ui_id));
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        internal void TakeOneFromItem(int ui_id)
+        {
+            if (CheckedItemForHotbarStorageNotEmpty(ui_id))
+            {
+                storageHotbar.TakeFromItemWith(hotbarUIElementIdList.IndexOf(ui_id),1);
+            }
+            else if (CheckedItemForUiStorageNotEmpty(ui_id))
+            {
+                storagePlayer.TakeFromItemWith(inventoryUIElementIdList.IndexOf(ui_id),1);
+            }
+            else
+            {
+                throw new Exception("No item with ui id " + ui_id);
+            }
+        }
+
+        internal int GetItemCountFor(int ui_id)
+        {
+            if (CheckedItemForHotbarStorageNotEmpty(ui_id))
+            {
+                return storageHotbar.GetCountOfItemWithIndex(hotbarUIElementIdList.IndexOf(ui_id));
+            }
+            else if (CheckedItemForUiStorageNotEmpty(ui_id))
+            {
+                return storagePlayer.GetCountOfItemWithIndex(inventoryUIElementIdList.IndexOf(ui_id));
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        internal void RemoveItemFromInventory(int ui_id)
+        {
+            if (hotbarUIElementIdList.Contains(ui_id))
+            {
+                storageHotbar.RemoveItemOfIndex(hotbarUIElementIdList.IndexOf(ui_id));
+            }
+            else if (inventoryUIElementIdList.Contains(ui_id))
+            {
+                storagePlayer.RemoveItemOfIndex(inventoryUIElementIdList.IndexOf(ui_id));
+            }
+            else
+            {
+                throw new Exception("No item with id " + ui_id);
+            }
+            ResetSelectedItem();
+        }
+
         public List<ItemData> GetItemsDataForHotbar()
         {
             return storageHotbar.GetItemsData();
@@ -121,7 +186,7 @@ namespace Inventory {
             }
         }
         private bool CheckedItemForHotbarStorageNotEmpty(int ui_id){
-            return storageHotbar.CheckIfItemIsEmpty(hotbarUIElementIdList.IndexOf(ui_id)) == false;
+            return hotbarUIElementIdList.Contains(ui_id) && storageHotbar.CheckIfItemIsEmpty(hotbarUIElementIdList.IndexOf(ui_id)) == false;
         }
         internal void SwapStorageHotbarToInventory(int droppedItemID, int draggedItemID){
             var storage_IdDraggedItem = hotbarUIElementIdList.IndexOf(draggedItemID);
@@ -155,6 +220,22 @@ namespace Inventory {
             else{
                 storageHotbar.SwapItemWithIndexFor(storage_IdDroppedItem, storagedata_IdDraggedItem);
                 storagePlayer.RemoveItemOfIndex(storage_IdDraggedItem);
+            }
+        }
+
+        internal string GetItemIdFor(int ui_id)
+        {
+            if (CheckedItemForUiStorageNotEmpty(ui_id))
+            {
+                return storagePlayer.GetIdOfItemWithIndex(inventoryUIElementIdList.IndexOf(ui_id));
+            }
+            else if (CheckedItemForHotbarStorageNotEmpty(ui_id))
+            {
+                return storageHotbar.GetIdOfItemWithIndex(hotbarUIElementIdList.IndexOf(ui_id));
+            }
+            else
+            {
+                return null;
             }
         }
     }

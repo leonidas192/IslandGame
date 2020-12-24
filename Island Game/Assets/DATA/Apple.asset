@@ -17,9 +17,9 @@ MonoBehaviour:
   imageSprite: {fileID: -3058816285959479155, guid: 0e3986646a6245a4eacbf7e97abd98b7,
     type: 3}
   model: {fileID: -927199367670048503, guid: dfcb196796269664d95e389fb7e98ff4, type: 3}
-  isStackable: 0
+  isStackable: 1
   stackLimit: 100
-  itemType: 0
+  itemType: 1
   staminaBonus: 0
   hungerBonus: 5
   energyBonus: 0

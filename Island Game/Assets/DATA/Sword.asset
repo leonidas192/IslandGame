@@ -18,7 +18,7 @@ MonoBehaviour:
   model: {fileID: -927199367670048503, guid: e4640b6327075584da8acf3f50016cde, type: 3}
   isStackable: 0
   stackLimit: 1
-  itemType: 0
+  itemType: 2
   damageMin: 5
   damageMax: 10
   criticalChance: 0.2
