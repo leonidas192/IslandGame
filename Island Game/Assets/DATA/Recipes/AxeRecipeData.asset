@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AxeRecipeData
   m_EditorClassIdentifier: 
   recipeName: Axe
-  outcome: {fileID: 0}
+  outcome: {fileID: 11400000, guid: 315ee4a79e1d417438f744211882b897, type: 2}
   outcomeQuantity: 1
   ingredientsRequired:
   - ingredient: {fileID: 11400000, guid: 4b0de7fbad56e0648bbbcd6a5d8da0e6, type: 2}

@@ -31,7 +31,7 @@ public class CraftingSystem : MonoBehaviour
         {
             currentRecipeUiId = -1;
         }
-        if(currentRecipeUiId!= -1)
+        if (currentRecipeUiId != -1)
         {
             RecheckIngredients();
         }
@@ -39,12 +39,12 @@ public class CraftingSystem : MonoBehaviour
         {
             recipeUiIdList = uiCrafting.PrepareRecipeItems(craftingRecipes);
         }
-        
+
     }
 
     public void RecheckIngredients()
     {
-        if(currentRecipeUiId != -1)
+        if (currentRecipeUiId != -1)
         {
             RecipeClickedHandler(currentRecipeUiId);
         }
@@ -69,11 +69,11 @@ public class CraftingSystem : MonoBehaviour
         foreach (var key in ingredientsIdCountDict.Keys)
         {
             bool enoughItemFlag = onCheckResourceAvailability.Invoke(key, ingredientsIdCountDict[key]);
-            if(blockCraftButton == false)
+            if (blockCraftButton == false)
             {
                 blockCraftButton = !enoughItemFlag;
             }
-            uiCrafting.AddIngredient(ItemDataManager.instance.GetItemName(key), ItemDataManager.instance.GetItemSprite(key), ingredientsIdCountDict[key], enoughItemFlag); 
+            uiCrafting.AddIngredient(ItemDataManager.instance.GetItemName(key), ItemDataManager.instance.GetItemSprite(key), ingredientsIdCountDict[key], enoughItemFlag);
         }
 
         uiCrafting.ShowIngredientsUI();

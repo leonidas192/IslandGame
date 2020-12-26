@@ -48,7 +48,7 @@ public class UiCrafting : MonoBehaviour
 
     public void ToggleUI()
     {
-        if(craftingPanel.activeSelf == false)
+        if (craftingPanel.activeSelf == false)
         {
             craftingPanel.SetActive(true);
         }

@@ -111,7 +111,7 @@ namespace Inventory {
         {
             int quantity = storagePlayer.GetItemCount(id);
             quantity += storageHotbar.GetItemCount(id);
-            if(quantity == count)
+            if(quantity >= count)
             {
                 return true;
             }

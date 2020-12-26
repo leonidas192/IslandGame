@@ -34,7 +34,7 @@ public class IngredientItemElement : ItemPanelHelper
     public void SetItemUI(string name, Sprite image, int count, bool enoughItems)
     {
         base.SetItemUI(name, image);
-        countNeedeTxt.text = "x "+count;
+        countNeedeTxt.text = "x " + count;
         if (enoughItems)
         {
             ResetAvailability();
