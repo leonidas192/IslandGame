@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 5048929618270116036}
   - component: {fileID: 5210431934057991528}
   - component: {fileID: 2972101388495477996}
-  - component: {fileID: 8272955135837656302}
+  - component: {fileID: 630482369546836878}
   m_Layer: 5
   m_Name: HotbarItemPanel
   m_TagString: Untagged
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0.48235294, g: 1, b: 0, a: 0.5}
   m_EffectDistance: {x: 5, y: 5}
   m_UseGraphicAlpha: 1
---- !u!114 &8272955135837656302
+--- !u!114 &630482369546836878
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,18 +205,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 7415427651038336958}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef0164f04140684d985c1c98c2981b8, type: 3}
+  m_Script: {fileID: 11500000, guid: dbbcec807288a5942a1dfc2257613f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemImage: {fileID: 3290380304962159266}
   nameText: {fileID: 0}
-  countText: {fileID: 5156261451129875245}
   itemName: 
-  itemCount: 
-  isEmpty: 1
-  outline: {fileID: 2972101388495477996}
-  isHotbarItem: 1
+  outline: {fileID: 0}
   backgroundSprite: {fileID: 21300000, guid: 8d2b0b3047c5bf0488406e2ec3716d2d, type: 3}
+  countText: {fileID: 5156261451129875245}
+  itemCount: 0
+  isEmpty: 1
+  isHotbarItem: 0
 --- !u!1 &8391091105279056289
 GameObject:
   m_ObjectHideFlags: 0

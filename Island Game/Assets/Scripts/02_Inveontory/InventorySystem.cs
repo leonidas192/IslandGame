@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 
 public class InventorySystem : MonoBehaviour, ISavable
 {
+    public Action onInventoryStateChanged;
+
     private UIInventory uiInventory;
 
     private InventorySystemData inventoryData;
@@ -26,7 +28,7 @@ public class InventorySystem : MonoBehaviour, ISavable
     {
         inventoryData = new InventorySystemData(playerStorageSize, uiInventory.HotbarElementsCount);
         inventoryData.updateHotbarCallback += UpdateHotbarHandler;
-        uiInventory.AssignDropButtonHandler(DropHandler);
+        uiInventory.AssignDropButtonHandler(DropItemHandler);
         uiInventory.AssignUseButtonHandler(UseInventoryItemHandler);
 
         //ItemData artificialItem = new ItemData(0,20, "8bb87095fbb5408c9ba6d33e9a4e4b3e", true,100);
@@ -42,8 +44,36 @@ public class InventorySystem : MonoBehaviour, ISavable
             hotbarUiElementsList[i].DragContinueCallback +=DraggingHandler;
             hotbarUiElementsList[i].DragStartCallback += DragStartHandler;
             hotbarUiElementsList[i].DragStopCallback += DragStopHandler;
-            hotbarUiElementsList[i].DropCallback += DropHandler;
+            hotbarUiElementsList[i].DropCalback += DropHandler;
         }
+    }
+
+    internal void CraftAnItem(RecipeSO recipe)
+    {
+        foreach (var recipeIngredients in recipe.ingredientsRequired)
+        {
+            inventoryData.TakeFromItem(recipeIngredients.ingredient.ID, recipeIngredients.count);
+        }
+        inventoryData.AddToStorage(recipe);
+        UpdateInventoryItems();
+        UpdateHotbarHandler();
+        onInventoryStateChanged.Invoke();
+    }
+
+    private void UpdateInventoryItems()
+    {
+        ToggleInventory();
+        ToggleInventory();
+    }
+
+    internal bool CheckInventoryFull()
+    {
+        return inventoryData.CheckIfStorageIsFull();
+    }
+
+    internal bool CheckResourceAvailability(string id, int count)
+    {
+        return inventoryData.CheckItemInStorage(id,count);
     }
 
     internal void HotbarShortKeyHandler(int hotbarKey)
@@ -82,6 +112,7 @@ public class InventorySystem : MonoBehaviour, ISavable
                 UpdateUI(ui_id, inventoryData.GetItemCountFor(ui_id));
             }
         }
+        onInventoryStateChanged.Invoke();
     }
 
     private void UpdateUI(int ui_id, int count)
@@ -89,12 +120,13 @@ public class InventorySystem : MonoBehaviour, ISavable
         uiInventory.updateItemInfo(ui_id, count);
     }
 
-    private void DropHandler()
+    private void DropItemHandler()
     {
         var id = inventoryData.selectedItemUIID;
         ItemSpawnManager.instance.CreateItemAtPlayersFeet(inventoryData.GetItemIdFor(id), inventoryData.GetItemCountFor(id));
         ClearUIElement(id);
         inventoryData.RemoveItemFromInventory(id);
+        onInventoryStateChanged.Invoke();
     }
 
     private void ClearUIElement(int ui_id)
@@ -116,7 +148,7 @@ public class InventorySystem : MonoBehaviour, ISavable
             {
                 var itemName = ItemDataManager.instance.GetItemName(itemData.ID);
                 var itemSprite = ItemDataManager.instance.GetItemSprite(itemData.ID);
-                uiItemElement.SetInventoryUIElement(itemName, itemData.Count, itemSprite);
+                uiItemElement.SetItemUI(itemName, itemData.Count, itemSprite);
             }
         }
     }
@@ -153,7 +185,7 @@ public class InventorySystem : MonoBehaviour, ISavable
             {
                 var itemName = ItemDataManager.instance.GetItemName(itemData.ID);
                 var itemSprite = ItemDataManager.instance.GetItemSprite(itemData.ID);
-                uiItemElement.SetInventoryUIElement(itemName, itemData.Count, itemSprite);
+                uiItemElement.SetItemUI(itemName, itemData.Count, itemSprite);
             }
             inventoryData.AddInventoryUIElement(uiItemElement.GetInstanceID());
         }      
@@ -173,7 +205,7 @@ public class InventorySystem : MonoBehaviour, ISavable
             uiItemElement.DragContinueCallback += DraggingHandler;
             uiItemElement.DragStartCallback += DragStartHandler;
             uiItemElement.DragStopCallback += DragStopHandler;
-            uiItemElement.DropCallback += DropHandler;
+            uiItemElement.DropCalback += DropHandler;
         }
     }
     private void DropHandler(PointerEventData eventData,int droppedItemID){
@@ -254,6 +286,7 @@ public class InventorySystem : MonoBehaviour, ISavable
     public int AddToStorage(IInventoryItem item)
     {
         int val = inventoryData.AddToStorage(item);
+        onInventoryStateChanged.Invoke();
         return val;
     }
 

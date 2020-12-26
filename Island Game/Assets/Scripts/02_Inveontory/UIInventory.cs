@@ -16,14 +16,14 @@ public class UIInventory : MonoBehaviour
     public bool IsInventoryVisible { get => inventoryGeneralPanel.activeSelf; }
     public int HotbarElementsCount { get => hotbarUIItems.Count; }
     public RectTransform Draggableitem { get => draggableitem; }
-    public ItemPanelHelper DraggableItemPanel { get => draggableItemPanel; }
+    public InventoryItemPanelHelper DraggableItemPanel { get => draggableItemPanel; }
 
-    public Dictionary<int, ItemPanelHelper> inventoryUIItems = new Dictionary<int, ItemPanelHelper>();
-    public Dictionary<int, ItemPanelHelper> hotbarUIItems = new Dictionary<int, ItemPanelHelper>();
+    public Dictionary<int, InventoryItemPanelHelper> inventoryUIItems = new Dictionary<int, InventoryItemPanelHelper>();
+    public Dictionary<int, InventoryItemPanelHelper> hotbarUIItems = new Dictionary<int, InventoryItemPanelHelper>();
 
     private List<int> listOfHotbarElementID = new List<int>();
 
-    public List<ItemPanelHelper> GetUiElementsForHotbar()
+    public List<InventoryItemPanelHelper> GetUiElementsForHotbar()
     {
         return hotbarUIItems.Values.ToList();
     }
@@ -33,7 +33,7 @@ public class UIInventory : MonoBehaviour
     public GameObject storagePrefab;
 
     private RectTransform draggableitem;
-    private ItemPanelHelper draggableItemPanel;
+    private InventoryItemPanelHelper draggableItemPanel;
 
     public Canvas canvas;
 
@@ -42,7 +42,7 @@ public class UIInventory : MonoBehaviour
         inventoryGeneralPanel.SetActive(false);
         foreach (Transform child in hotbarPanel.transform)
         {
-            ItemPanelHelper helper = child.GetComponent<ItemPanelHelper>();
+            InventoryItemPanelHelper helper = child.GetComponent<InventoryItemPanelHelper>();
             if (helper != null)
             {
                 hotbarUIItems.Add(helper.GetInstanceID(), helper);
@@ -80,7 +80,7 @@ public class UIInventory : MonoBehaviour
         GetItemFromCorrectDictionary(ui_id).ClearImage();
     }
 
-    private ItemPanelHelper GetItemFromCorrectDictionary(int ui_id)
+    private InventoryItemPanelHelper GetItemFromCorrectDictionary(int ui_id)
     {
         if (inventoryUIItems.ContainsKey(ui_id))
         {
@@ -127,12 +127,12 @@ public class UIInventory : MonoBehaviour
         for (int i = 0; i < playerStorageLimit; i++)
         {
             var element = Instantiate(storagePrefab, Vector3.zero, Quaternion.identity, storagePanel.transform);
-            var itemHelper = element.GetComponent<ItemPanelHelper>();
+            var itemHelper = element.GetComponent<InventoryItemPanelHelper>();
             inventoryUIItems.Add(itemHelper.GetInstanceID(), itemHelper);
         }
     }
 
-    public List<ItemPanelHelper> GetUiElementsForInventory()
+    public List<InventoryItemPanelHelper> GetUiElementsForInventory()
     {
         return inventoryUIItems.Values.ToList();
     }

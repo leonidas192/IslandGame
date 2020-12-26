@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2326f9a99fb6804ba84434968ff3964, type: 3}
+  m_Name: CampFire
+  m_EditorClassIdentifier: 
+  ID: 6f7f69121bff44138a8ca9ed817eca9e
+  itemName: Campfire
+  imageSprite: {fileID: -4279434219207958025, guid: a3a0e6d67513585499b26a44b7e4dc0e,
+    type: 3}
+  model: {fileID: -927199367670048503, guid: 19862b4e183f0f24da0146c94cd3388f, type: 3}
+  isStackable: 0
+  stackLimit: 100
+  itemType: 4
