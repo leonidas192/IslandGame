@@ -18,6 +18,9 @@ public class InventoryItemPanelHelper : ItemPanelHelper, IPointerClickHandler, I
     public bool isEmpty = true;
     public bool isHotbarItem = false;
 
+    public Image equippedIndicator;
+    private bool equipped = false;
+
 
     public void SetItemUI(string name, int count, Sprite image)
     {
@@ -35,6 +38,14 @@ public class InventoryItemPanelHelper : ItemPanelHelper, IPointerClickHandler, I
         }
         isEmpty = false;
         SetImageSprite(image);
+
+        if(equipped){
+            ModifiyEquippedIndicatorAlpha(1);
+        }
+        else
+        {
+            ModifiyEquippedIndicatorAlpha(0);
+        }
     }
 
     public override void SetItemUI(string name, Sprite image)
@@ -46,6 +57,14 @@ public class InventoryItemPanelHelper : ItemPanelHelper, IPointerClickHandler, I
         countText.text = "";
         isEmpty = false;
         SetImageSprite(image);
+
+        if(equipped){
+            ModifiyEquippedIndicatorAlpha(1);
+        }
+        else
+        {
+            ModifiyEquippedIndicatorAlpha(0);
+        }
     }
 
     public void SwapWithData(string name, int count, Sprite image, bool isEmpty)
@@ -103,4 +122,22 @@ public class InventoryItemPanelHelper : ItemPanelHelper, IPointerClickHandler, I
         DropCalback.Invoke(eventData, GetInstanceID());
     }
 
+    public void ToogleEquippedIndicator(){
+        if(equipped == false)
+        {
+            ModifiyEquippedIndicatorAlpha(1);
+            equipped = true;
+        }
+        else
+        {
+            ModifiyEquippedIndicatorAlpha(0);
+            equipped = false;
+        }
+    }
+
+    public void ModifiyEquippedIndicatorAlpha(int alpha){
+        Color c = equippedIndicator.color;
+        c.a = Mathf.Clamp01(alpha);
+        equippedIndicator.color = c;
+    }
 }

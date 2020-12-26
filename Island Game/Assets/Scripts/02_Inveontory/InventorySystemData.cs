@@ -23,6 +23,30 @@ namespace Inventory {
 
         public int PlayerStorageLimit { get => storagePlayer.StorageLimit; }
 
+
+        private int equippedItemStorageIndex = -1;
+
+        private Storage equippedItemStorage = null;
+
+        public bool ItemEquipped{get => equippedItemStorageIndex != -1; }
+
+        public int EquippedUI_ID{
+            get
+            {
+                if(equippedItemStorage == null){
+                    return -1;
+                }
+                if(equippedItemStorage == storageHotbar){
+                   return hotbarUIElementIdList[equippedItemStorageIndex];
+                }
+                else{
+                    return inventoryUIElementIdList[equippedItemStorageIndex];
+                }
+            }
+        }
+
+        public string EquippedItemId{get => equippedItemStorage.GetItemData(equippedItemStorageIndex).ID; }
+
         public void SetSelectedItemTo(int ui_id)
         {
             selectedItemUIID = ui_id;
@@ -136,6 +160,27 @@ namespace Inventory {
             else
             {
                 return true;
+            }
+        }
+        internal void UnequipItem(){
+            if(equippedItemStorageIndex != -1){
+
+                equippedItemStorageIndex = -1;
+                equippedItemStorage = null;
+            }
+        }
+        internal void EquipItem(int ui_id){
+            UnequipItem();
+            if(hotbarUIElementIdList.Contains(ui_id)){
+                equippedItemStorageIndex = hotbarUIElementIdList.IndexOf(ui_id);
+                equippedItemStorage = storageHotbar;
+            }else if(inventoryUIElementIdList.Contains(ui_id) && storagePlayer.CheckIfItemIsEmpty(inventoryUIElementIdList.IndexOf(ui_id)) == false){
+                equippedItemStorageIndex = inventoryUIElementIdList.IndexOf(ui_id);
+                equippedItemStorage = storagePlayer;
+            }
+            else
+            {
+                throw new Exception(" no item with ui_id"+ui_id);
             }
         }
 

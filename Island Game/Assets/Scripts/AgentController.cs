@@ -17,12 +17,17 @@ public class AgentController : MonoBehaviour
 
     public GameManager gameManager;
 
+    public Transform itemSlot;
+
+    public AudioSource audioSource;
+
     BaseState currentState;
     public readonly BaseState movementState = new MovementState();
     public readonly BaseState jumpState = new JumpState();
     public readonly BaseState fallingState = new FallingState();
     public readonly BaseState inventoryState = new InventoryState();
     public readonly BaseState interactState = new InteractState();
+    public readonly BaseState attackState = new AttackState();
 
     private void OnEnable()
     {
@@ -110,4 +115,9 @@ public class AgentController : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position + input.MovementDirectionVector, detectionSystem.detectionRadius);
         }
     }
+
+    public void PlayWeaponSwooshSound(){
+        audioSource.PlayOneShot(AudioLibrary.instance.weaponWoosh);
+    }
+   
 }

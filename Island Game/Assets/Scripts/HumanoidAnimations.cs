@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class HumanoidAnimations : MonoBehaviour
 {
 
     private Animator animator;
+    public Action OnFinishAttacking;
 
     private void Awake()
     {
@@ -30,6 +32,13 @@ public class HumanoidAnimations : MonoBehaviour
     public void TriggerFallAnimation()
     {
         animator.SetTrigger("Fall");
+    }
+
+    public void TriggerAttackAnimation(){
+        animator.SetTrigger("Attack");
+    }
+    public void FinishAttackingCallback(){
+        OnFinishAttacking.Invoke();
     }
 
     public float SetCorrectAnimation(float desiredRotationAngle, int angleThreshold, int inputVerticalDirection)

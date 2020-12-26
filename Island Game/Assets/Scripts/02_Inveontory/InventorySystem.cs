@@ -17,8 +17,10 @@ public class InventorySystem : MonoBehaviour, ISavable
     public int playerStorageSize = 20;
 
     public InteractionManager interactionManager;
+    
+    public bool WeaponEquipped {get => inventoryData.ItemEquipped;}
 
-
+    public string EquippedWeaponID{get => inventoryData.EquippedItemId;}
     private void Awake()
     {
         uiInventory = GetComponent<UIInventory>();       
@@ -111,8 +113,25 @@ public class InventorySystem : MonoBehaviour, ISavable
             {
                 UpdateUI(ui_id, inventoryData.GetItemCountFor(ui_id));
             }
+            onInventoryStateChanged.Invoke();
         }
-        onInventoryStateChanged.Invoke();
+        else if (interactionManager.EquipItem(itemData))
+        {
+            DeselectCurrentItem();
+            ItemSpawnManager.instance.RemoveItemForPlayerHand();
+            if(inventoryData.ItemEquipped){
+                uiInventory.ToogleEquipSelectedItem(inventoryData.EquippedUI_ID);
+                if(inventoryData.EquippedUI_ID == ui_id){
+                    
+                    inventoryData.UnequipItem();
+                    return;
+                }
+            }
+            inventoryData.EquipItem(ui_id);
+            uiInventory.ToogleEquipSelectedItem(ui_id);
+            ItemSpawnManager.instance.CreateItemObjectInPlayerHand(itemData.ID);
+        } 
+        
     }
 
     private void UpdateUI(int ui_id, int count)
@@ -188,7 +207,15 @@ public class InventorySystem : MonoBehaviour, ISavable
                 uiItemElement.SetItemUI(itemName, itemData.Count, itemSprite);
             }
             inventoryData.AddInventoryUIElement(uiItemElement.GetInstanceID());
-        }      
+            
+        }
+        for (int i = 0; i < uiElementList.Count; i++)    {
+            
+            var uiItemElement = uiElementList[i];
+            if(inventoryData.EquippedUI_ID == uiItemElement.GetInstanceID()){
+                uiItemElement.ToogleEquippedIndicator();
+            }
+        }  
     }
 
     private void PrepareUI()
@@ -281,6 +308,13 @@ public class InventorySystem : MonoBehaviour, ISavable
         inventoryData.SetSelectedItemTo(ui_id);
         uiInventory.HighlightSelectedItem(ui_id);
         uiInventory.ToggleItemButtons(ItemDataManager.instance.IsItemUsable(inventoryData.GetItemIdFor(inventoryData.selectedItemUIID)),true);
+        if(inventoryData.ItemEquipped){
+            if(ui_id == inventoryData.EquippedUI_ID){
+                
+                uiInventory.ToggleItemButtons(ItemDataManager.instance.IsItemUsable(inventoryData.GetItemIdFor(inventoryData.selectedItemUIID)),false);
+
+            }
+        }
     }
 
     public int AddToStorage(IInventoryItem item)

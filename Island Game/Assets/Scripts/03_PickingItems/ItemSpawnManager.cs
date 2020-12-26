@@ -52,6 +52,10 @@ public class ItemSpawnManager : MonoBehaviour
         }
     }
 
+    internal void CreateItemInPlace(Vector3 hitpoint, MaterialSO itemToSpawn, int resourceCountToSpawn){
+        var itemGameObject = Instantiate(itemToSpawn.model, hitpoint + Vector3.up*0.2f, Quaternion.identity);
+        PrepareItemGameObject(itemToSpawn.ID, resourceCountToSpawn, itemGameObject);
+    }
     private void CreateItemInPlace(Vector3 randomPosition, ItemSO itemToSpawn, int count)
     {
         var itemGameObject = Instantiate(itemToSpawn.model, randomPosition, Quaternion.identity, itemsSpawnersParent);
@@ -79,5 +83,19 @@ public class ItemSpawnManager : MonoBehaviour
         pickableItem.SetCount(currentItemCount);
         pickableItem.dataSource = ItemDataManager.instance.GetItemData(itemID);
         itemGameObject.layer = LayerMask.NameToLayer(pickableLayerMask);
+    }
+    internal void RemoveItemForPlayerHand(){
+    
+        foreach (Transform child in playerTransform.GetComponent<AgentController>().itemSlot)
+        {
+            Destroy(child.gameObject);
+        }
+      
+    }
+    internal void CreateItemObjectInPlayerHand(string itemID){
+        var itemPrefab = ItemDataManager.instance.GetItemPrefab(itemID);
+        var item = Instantiate(itemPrefab,  playerTransform.GetComponent<AgentController>().itemSlot);
+        item.transform.localPosition = Vector3.zero;
+        item.transform.localRotation = Quaternion.identity;
     }
 }

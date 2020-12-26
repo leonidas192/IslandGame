@@ -36,10 +36,20 @@ public class MovementState : BaseState
         controllerReference.TransitionToState(controllerReference.inventoryState);
     }
 
-    public override void HandlePrimaryAction()
+    public override void HandleSecondaryAction()
     {
         base.HandlePrimaryAction();
         controllerReference.TransitionToState(controllerReference.interactState);
+    }
+    
+    public override void HandlePrimaryAction(){
+        base.HandlePrimaryAction();
+        if(controllerReference.inventorySystem.WeaponEquipped){
+            controllerReference.TransitionToState(controllerReference.attackState);
+        }
+        else{
+            Debug.Log("No weapon equiped. Can't Attack");
+        }
     }
 
     public override void HandleHotbarInput(int hotbarKey)

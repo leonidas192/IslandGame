@@ -25,9 +25,3 @@ public class ToolSO : WeaponItemSO
 
 }
 
-public enum ResourceType
-{
-    None,
-    Wood,
-    Stone
-}

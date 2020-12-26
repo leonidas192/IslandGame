@@ -136,6 +136,17 @@ public class UIInventory : MonoBehaviour
     {
         return inventoryUIItems.Values.ToList();
     }
+
+    internal void ToogleEquipSelectedItem(int itemID){
+        if(hotbarUIItems.ContainsKey(itemID)){
+            hotbarUIItems[itemID].ToogleEquippedIndicator();
+        }
+        else
+        {
+            inventoryUIItems[itemID].ToogleEquippedIndicator();
+        }
+    }
+
     public void DestroyDraggedObject(){
         if(draggableitem != null){
             Destroy(draggableitem.gameObject);

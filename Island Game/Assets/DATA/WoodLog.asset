@@ -20,3 +20,4 @@ MonoBehaviour:
   isStackable: 1
   stackLimit: 100
   itemType: 3
+  resourceType: 1
