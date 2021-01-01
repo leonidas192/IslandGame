@@ -16,7 +16,7 @@ MonoBehaviour:
   itemName: Campfire
   imageSprite: {fileID: -4279434219207958025, guid: a3a0e6d67513585499b26a44b7e4dc0e,
     type: 3}
-  model: {fileID: -927199367670048503, guid: 19862b4e183f0f24da0146c94cd3388f, type: 3}
+  model: {fileID: 4806640388172998791, guid: a7af422da100c454ebbe015a7da04557, type: 3}
   isStackable: 0
   stackLimit: 100
   itemType: 4

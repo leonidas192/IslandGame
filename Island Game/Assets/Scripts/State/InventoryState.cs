@@ -27,10 +27,11 @@ public class InventoryState : BaseState
 
     }
 
-    public override void HandleMenuInput(){
-        base.HandleMenuInput();
-        controllerReference.inventorySystem.ToggleInventory();
-        controllerReference.craftingSystem.ToggleCraftingUI(true);
+    public override void HandleEscapeInput(){
+        HandleInventoryInput();
+        //base.HandleEscapeInput();
+        //controllerReference.inventorySystem.ToggleInventory();
+        //controllerReference.craftingSystem.ToggleCraftingUI(true);
     }
 
 

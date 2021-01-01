@@ -21,6 +21,8 @@ public class AgentController : MonoBehaviour
 
     public AudioSource audioSource;
 
+    public BuildingPlacementStorage buildingPlacementStorage;
+
     BaseState currentState;
     public readonly BaseState movementState = new MovementState();
     public readonly BaseState jumpState = new JumpState();
@@ -28,6 +30,7 @@ public class AgentController : MonoBehaviour
     public readonly BaseState inventoryState = new InventoryState();
     public readonly BaseState interactState = new InteractState();
     public readonly BaseState attackState = new AttackState();
+    public readonly BaseState placementState = new PlacementState();
 
     private void OnEnable()
     {
@@ -44,10 +47,25 @@ public class AgentController : MonoBehaviour
 
     private void Start()
     {
+        inventorySystem.OnStructureUse += StructureUseCallback;
         craftingSystem.onCheckResourceAvailability += inventorySystem.CheckResourceAvailability;
         craftingSystem.onCheckInventoryFull += inventorySystem.CheckInventoryFull;
         craftingSystem.onCraftItemRequest += inventorySystem.CraftAnItem;
         inventorySystem.onInventoryStateChanged += craftingSystem.RecheckIngredients;
+    }
+
+    private void StructureUseCallback()
+    {
+        if (inventorySystem.InventoryVisible)
+        {
+            inventorySystem.ToggleInventory();
+            craftingSystem.ToggleCraftingUI();
+            if(Time.timeScale == 0)
+            {
+                Time.timeScale = 1;
+            }
+        }
+        TransitionToState(placementState);
     }
 
     private void AssignInputListeners()
@@ -57,13 +75,13 @@ public class AgentController : MonoBehaviour
         input.OnToggleInventory += HandleInventoryInput;
         input.OnPrimaryAction += HandlePrimaryInput;
         input.OnSecondaryAction += HandleSecondaryInput;
-        input.OnMenuToggledKey += HandleMenu;
-    }
-    private void HandleMenu(){
-        currentState.HandleMenuInput();
-        gameManager.ToggleGameMenu();
+        input.OnEscapeKey += HandleEscapeKey;
     }
 
+   private void HandleEscapeKey()
+    {
+        currentState.HandleEscapeInput();
+    }
 
     private void HandleSecondaryInput()
     {

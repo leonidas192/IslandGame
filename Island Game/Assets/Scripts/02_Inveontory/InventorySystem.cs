@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 public class InventorySystem : MonoBehaviour, ISavable
 {
-    public Action onInventoryStateChanged;
+    public Action onInventoryStateChanged,OnStructureUse;
 
     private UIInventory uiInventory;
 
@@ -21,6 +21,11 @@ public class InventorySystem : MonoBehaviour, ISavable
     public bool WeaponEquipped {get => inventoryData.ItemEquipped;}
 
     public string EquippedWeaponID{get => inventoryData.EquippedItemId;}
+    public bool InventoryVisible { get => uiInventory.IsInventoryVisible; }
+
+    public StructureItemSO selectedStructureData = null;
+    public int selectedStructureUiId = 0;
+
     private void Awake()
     {
         uiInventory = GetComponent<UIInventory>();       
@@ -48,6 +53,28 @@ public class InventorySystem : MonoBehaviour, ISavable
             hotbarUiElementsList[i].DragStopCallback += DragStopHandler;
             hotbarUiElementsList[i].DropCalback += DropHandler;
         }
+    }
+
+    internal void RemoveSelectedStructureFromInventory()
+    {
+        RemoveItemFromInventory(selectedStructureUiId);
+        selectedStructureUiId = 0;
+        selectedStructureData = null;
+    }
+
+    private void RemoveItemFromInventory(int ui_id)
+    {
+        inventoryData.TakeOneFromItem(ui_id);
+        if (inventoryData.CheckIfSelectedItemIsEmpty(ui_id))
+        {
+            ClearUIElement(ui_id);
+            inventoryData.RemoveItemFromInventory(ui_id);
+        }
+        else
+        {
+            UpdateUI(ui_id, inventoryData.GetItemCountFor(ui_id));
+        }
+        onInventoryStateChanged.Invoke();
     }
 
     internal void CraftAnItem(RecipeSO recipe)
@@ -101,24 +128,21 @@ public class InventorySystem : MonoBehaviour, ISavable
 
     private void UseItem(ItemSO itemData, int ui_id)
     {
+        if(itemData.GetItemType() == ItemType.Structure)
+        {
+            selectedStructureUiId = ui_id;
+            selectedStructureData = (StructureItemSO)itemData;
+            OnStructureUse.Invoke();
+            return;
+        }
         if (interactionManager.UseItem(itemData))
         {
-            inventoryData.TakeOneFromItem(ui_id);
-            if (inventoryData.CheckIfSelectedItemIsEmpty(ui_id))
-            {
-                ClearUIElement(ui_id);
-                inventoryData.RemoveItemFromInventory(ui_id);
-            }
-            else
-            {
-                UpdateUI(ui_id, inventoryData.GetItemCountFor(ui_id));
-            }
-            onInventoryStateChanged.Invoke();
+            RemoveItemFromInventory(ui_id);
         }
         else if (interactionManager.EquipItem(itemData))
         {
             DeselectCurrentItem();
-            ItemSpawnManager.instance.RemoveItemForPlayerHand();
+            ItemSpawnManager.instance.RemoveItemFromPlayerHand();
             if(inventoryData.ItemEquipped){
                 uiInventory.ToogleEquipSelectedItem(inventoryData.EquippedUI_ID);
                 if(inventoryData.EquippedUI_ID == ui_id){

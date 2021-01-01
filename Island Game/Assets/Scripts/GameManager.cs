@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public UIInGameMenu gameMenu;
     private bool timeAlredyStopped = false;
     private bool pointerConfined = false;
+    public AudioSource ambientSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,8 +25,11 @@ public class GameManager : MonoBehaviour
         
     }
     public void ToggleGameMenu(){
-        if(gameMenu.MenuVisible == false){
-            if(Cursor.lockState == CursorLockMode.Confined){
+        if(gameMenu.MenuVisible == false)
+        {
+            ambientSound.Pause();
+            if(Cursor.lockState == CursorLockMode.Confined)
+            {
                 pointerConfined = true;
             }
             else
@@ -34,7 +38,8 @@ public class GameManager : MonoBehaviour
                 Cursor.visible = true;
             }
             
-            if(Time.timeScale == 0){
+            if(Time.timeScale == 0)
+            {
                 timeAlredyStopped = true;
             }
             else
@@ -44,14 +49,17 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if(timeAlredyStopped){
+            ambientSound.UnPause();
+            if(timeAlredyStopped)
+            {
                 timeAlredyStopped = false;
             }
             else
             {
                 Time.timeScale = 1;
             }
-            if(pointerConfined){
+            if(pointerConfined)
+            {
                 pointerConfined = false;
             }
             else
@@ -63,10 +71,12 @@ public class GameManager : MonoBehaviour
         }
         gameMenu.ToggleMenu();
     }
-    internal void SaveGame(){
+    internal void SaveGame()
+    {
         saveSystem.SaveObjects();
     }
-    private void DoneLoading(){
+    private void DoneLoading()
+    {
         gameMenu.ToggleLoadingPanel();
         Time.timeScale = 1;
     }
@@ -76,21 +86,25 @@ public class GameManager : MonoBehaviour
     {
         
     }
-    public void ExitToMainMenu(){
+    public void ExitToMainMenu()
+    {
         SceneManager.LoadScene(mainMenuSceneName);
 
     }
 
-    internal void StartNextScene(){
+    internal void StartNextScene()
+    {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
     }
 
-    internal void LoadSavedGame(){
+    internal void LoadSavedGame()
+    {
         PlayerPrefs.SetInt("LoadSavedData",1);
         StartNextScene();
     }
-    internal bool CheckSavedGameExist(){
+    internal bool CheckSavedGameExist()
+    {
         return saveSystem.CheckSavedDataExists();
     }   
 

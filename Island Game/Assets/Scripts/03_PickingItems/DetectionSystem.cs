@@ -22,6 +22,15 @@ public class DetectionSystem : MonoBehaviour
 
     public float attackDistance = 0.8f;
 
+    private Collider iUsableCollider;
+
+    public Collider IUsableCollider
+    {
+        get { return iUsableCollider; }
+        private set { iUsableCollider = value; }
+    }
+
+
     public Collider[] DetectObjectsInFront(Vector3 movementDirectionVector)
     {
         return Physics.OverlapSphere(transform.position + movementDirectionVector, detectionRadius, objectDetectionMask);
@@ -31,6 +40,7 @@ public class DetectionSystem : MonoBehaviour
     {
         var colliders = DetectObjectsInFront(movementDirectionVector);
         collidersList.Clear();
+        bool isUsableFound = false;
         foreach (var collider in colliders)
         {
             var pickableItem = collider.GetComponent<IPickable>();
@@ -38,12 +48,22 @@ public class DetectionSystem : MonoBehaviour
             {
                 collidersList.Add(collider);
             }
+            var usable = collider.GetComponent<IUsable>();
+            if (usable != null && isUsableFound == false)
+            {
+                IUsableCollider = collider;
+                isUsableFound = true;
+            }
+        }
+        if(isUsableFound == false)
+        {
+            IUsableCollider = null;
         }
         if (collidersList.Count == 0)
         {
             if (currentCollider != null)
             {
-                SwapToOriginalMaterial();
+                MaterialHelper.SwapToOriginalMaterial(currentCollider.gameObject, currentColliderMaterialsList);
                 currentCollider = null;
             }
             return;
@@ -51,65 +71,17 @@ public class DetectionSystem : MonoBehaviour
         if (currentCollider == null)
         {
             currentCollider = collidersList[0];
-            SwapToSelectionMaterial();
+            MaterialHelper.SwapToSelectionMaterial(currentCollider.gameObject, currentColliderMaterialsList, selectionMaterial);
         }
         else if (collidersList.Contains(currentCollider) == false)
         {
-            SwapToOriginalMaterial();
+            MaterialHelper.SwapToOriginalMaterial(currentCollider.gameObject, currentColliderMaterialsList);
             currentCollider = collidersList[0];
-            SwapToSelectionMaterial();
+            MaterialHelper.SwapToSelectionMaterial(currentCollider.gameObject, currentColliderMaterialsList, selectionMaterial);
         }
     }
 
-    private void SwapToSelectionMaterial()
-    {
-        currentColliderMaterialsList.Clear();
-        if (currentCollider.transform.childCount > 0)
-        {
-            foreach (Transform child in currentCollider.transform)
-            {
-                PrepareRendererToSwapMaterials();
-            }
-        }
-        else
-        {
-            PrepareRendererToSwapMaterials();
-        }
-    }
-
-    private void PrepareRendererToSwapMaterials()
-    {
-        var renderer = currentCollider.GetComponent<Renderer>();
-        currentColliderMaterialsList.Add(renderer.sharedMaterials);
-        SwapMaterials(renderer);
-    }
-
-    private void SwapMaterials(Renderer renderer)
-    {
-        Material[] matArray = new Material[renderer.materials.Length];
-        for (int i = 0; i < matArray.Length; i++)
-        {
-            matArray[i] = selectionMaterial;
-        }
-        renderer.materials = matArray;
-    }
-
-    private void SwapToOriginalMaterial()
-    {
-        if (currentColliderMaterialsList.Count > 1)
-        {
-            for (int i = 0; i < currentColliderMaterialsList.Count; i++)
-            {
-                var renderer = currentCollider.transform.GetChild(i).GetComponent<Renderer>();
-                renderer.materials = currentColliderMaterialsList[i];
-            }
-        }
-        else
-        {
-            var renderer = currentCollider.GetComponent<Renderer>();
-            renderer.materials = currentColliderMaterialsList[0];
-        }
-    }
+    
 
     public void DetectColliderInFront(){
         RaycastHit hit;

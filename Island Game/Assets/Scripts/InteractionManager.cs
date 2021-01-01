@@ -25,13 +25,13 @@ public class InteractionManager : MonoBehaviour
         }
         return false;
     }
-    internal bool EquipItem(ItemSO itemData){
+    internal bool EquipItem(ItemSO itemData)
+    {
         var itemType = itemData.GetItemType();
         switch (itemType)
         {
             case ItemType.None:
                 throw new System.Exception("Item can't be none");
-                break;
             case ItemType.Weapon:
                 return true;
             default:

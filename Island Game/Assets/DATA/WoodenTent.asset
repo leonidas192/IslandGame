@@ -16,7 +16,7 @@ MonoBehaviour:
   itemName: Wooden Tent
   imageSprite: {fileID: -5229125744465068697, guid: a3a0e6d67513585499b26a44b7e4dc0e,
     type: 3}
-  model: {fileID: -927199367670048503, guid: fdf6bffcb2edf004fa9e6192cdbd4a1e, type: 3}
+  model: {fileID: 6839410421778368844, guid: 31c6f65eb8496724fbb720673314142e, type: 3}
   isStackable: 0
   stackLimit: 100
   itemType: 4

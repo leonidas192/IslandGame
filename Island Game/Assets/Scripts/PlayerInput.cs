@@ -22,7 +22,9 @@ public class PlayerInput : MonoBehaviour
 
     private float previousPrimaryActionInput = 0, prevousSecondaryActionInput = 0;
 
-    bool menuState = false;
+    public Action OnEscapeKey { get; set; }
+
+    public bool menuState = false;
 
     public Action OnMenuToggledKey {get;set;}
     private void Start()
@@ -33,8 +35,10 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
-        CheckMenuButton();
-        if(menuState==false){
+        CheckEscapeButton();
+
+        if(menuState == false)
+        {
             GetMovementInput();
             GetMovementDirection();
             GetJumpInput();
@@ -45,16 +49,11 @@ public class PlayerInput : MonoBehaviour
         }
         
     }
-    private void CheckMenuButton(){
-        if(Input.GetKeyDown(KeyCode.Escape)){
-            if(menuState==false){
-                menuState = true;
-            }
-            else
-            {
-                menuState = false;
-            }
-            OnMenuToggledKey?.Invoke();
+
+    private void CheckEscapeButton(){
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnEscapeKey?.Invoke();
         }
     }
 
@@ -116,7 +115,7 @@ public class PlayerInput : MonoBehaviour
 
     private void GetMovementDirection()
     {
-        MovementInputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        MovementInputVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         //Debug.Log(MovementInputVector);
     }
 
