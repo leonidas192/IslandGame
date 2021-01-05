@@ -9,6 +9,7 @@ public class MovementState : BaseState
     public override void EnterState(AgentController controller)
     {
         base.EnterState(controller);
+        Debug.Log("Movement state");
         fallingDelay = defaultFallingDelay;
     }
 
@@ -45,7 +46,11 @@ public class MovementState : BaseState
     public override void HandlePrimaryAction(){
         base.HandlePrimaryAction();
         if(controllerReference.inventorySystem.WeaponEquipped){
-            controllerReference.TransitionToState(controllerReference.attackState);
+            if (controllerReference.playerStatsManager.Stamina > 0)
+            {
+                controllerReference.TransitionToState(controllerReference.attackState);
+            }
+            
         }
         else{
             Debug.Log("No weapon equiped. Can't Attack");

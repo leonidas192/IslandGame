@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InteractionManager : MonoBehaviour
 {
+    public AgentController agentController;
     public bool UseItem(ItemSO itemData)
     {
         var itemType = itemData.GetItemType();
@@ -14,6 +15,8 @@ public class InteractionManager : MonoBehaviour
             case ItemType.Food:
                 FoodItemSO foodData = (FoodItemSO)itemData;
                 Debug.Log("Boosting player stats with food");
+                agentController.playerStatsManager.Health += foodData.hungerBonus;
+                agentController.playerStatsManager.Stamina += foodData.energyBonus;
                 return true;
             case ItemType.Weapon:
                 WeaponItemSO weapon = (WeaponItemSO)itemData;

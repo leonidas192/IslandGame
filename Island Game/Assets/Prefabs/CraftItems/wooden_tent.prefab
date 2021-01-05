@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 7543861782031547231}
   - component: {fileID: 4352697693462482955}
   - component: {fileID: 1585464285742932726}
-  m_Layer: 0
+  - component: {fileID: 6106376818333149218}
+  m_Layer: 11
   m_Name: wooden_tent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,3 +81,15 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &6106376818333149218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6839410421778368844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb2e1dc8c410036459f1270f02313c5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

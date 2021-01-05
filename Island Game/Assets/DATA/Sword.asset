@@ -19,6 +19,6 @@ MonoBehaviour:
   isStackable: 0
   stackLimit: 1
   itemType: 2
-  damageMin: 5
-  damageMax: 10
+  damageMin: 1
+  damageMax: 3
   criticalChance: 0.2

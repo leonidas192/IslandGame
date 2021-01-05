@@ -88,6 +88,8 @@ public class GameManager : MonoBehaviour
     }
     public void ExitToMainMenu()
     {
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         SceneManager.LoadScene(mainMenuSceneName);
 
     }

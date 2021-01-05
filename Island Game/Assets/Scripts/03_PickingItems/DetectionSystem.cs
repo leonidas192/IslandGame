@@ -30,6 +30,9 @@ public class DetectionSystem : MonoBehaviour
         private set { iUsableCollider = value; }
     }
 
+    [ColorUsageAttribute(false,true)]
+    public Color usableEmissionColor;
+
 
     public Collider[] DetectObjectsInFront(Vector3 movementDirectionVector)
     {
@@ -49,14 +52,29 @@ public class DetectionSystem : MonoBehaviour
                 collidersList.Add(collider);
             }
             var usable = collider.GetComponent<IUsable>();
-            if (usable != null && isUsableFound == false)
+            if(usable != null && isUsableFound == false)
             {
+                if(IUsableCollider != null)
+                {
+                    MaterialHelper.DisableEmission(iUsableCollider.gameObject);
+                }
                 IUsableCollider = collider;
+                MaterialHelper.EnableEmission(IUsableCollider.gameObject, usableEmissionColor);
                 isUsableFound = true;
+                if (currentCollider != null)
+                {
+                    MaterialHelper.SwapToOriginalMaterial(currentCollider.gameObject, currentColliderMaterialsList);
+                    currentCollider = null;
+                }
+                return;
             }
         }
         if(isUsableFound == false)
         {
+            if (IUsableCollider != null)
+            {
+                MaterialHelper.DisableEmission(iUsableCollider.gameObject);
+            }
             IUsableCollider = null;
         }
         if (collidersList.Count == 0)
@@ -77,17 +95,19 @@ public class DetectionSystem : MonoBehaviour
         {
             MaterialHelper.SwapToOriginalMaterial(currentCollider.gameObject, currentColliderMaterialsList);
             currentCollider = collidersList[0];
-            MaterialHelper.SwapToSelectionMaterial(currentCollider.gameObject, currentColliderMaterialsList, selectionMaterial);
+            MaterialHelper.SwapToSelectionMaterial(currentCollider.gameObject,currentColliderMaterialsList,selectionMaterial);
         }
-    }
+    } 
 
     
 
-    public void DetectColliderInFront(){
+    public void DetectColliderInFront()
+    {
         RaycastHit hit;
-        if(Physics.SphereCast(WeaponRaycastStartPosition.position,0.2f,transform.forward,out hit, attackDistance)){
-            OnAttackSuccessful?.Invoke(hit.collider,hit.point);
+        if(Physics.SphereCast(WeaponRaycastStartPosition.position,0.2f, transform.forward, out hit, attackDistance))
+        {
+            OnAttackSuccessful?.Invoke(hit.collider, hit.point);
         }
-        
+
     }
 }

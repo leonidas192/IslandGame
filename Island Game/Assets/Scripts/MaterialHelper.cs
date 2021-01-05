@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class MaterialHelper 
+public static class MaterialHelper
 {
     public static void SwapToSelectionMaterial(GameObject objectToModify, List<Material[]> currentColliderMaterialsList, Material selectionMaterial)
     {
@@ -47,10 +47,29 @@ public static class MaterialHelper
             {
                 if (objectToModify.transform.GetChild(i).gameObject.activeSelf)
                 {
-                    var childrenderer = objectToModify.transform.GetChild(i).GetComponent<Renderer>();
-                    childrenderer.materials = currentColliderMaterialsList[i];
+                    var childRenderer = objectToModify.transform.GetChild(i).GetComponent<Renderer>();
+                    childRenderer.materials = currentColliderMaterialsList[i];
                 }
             }
+        }
+    }
+
+    public static void EnableEmission(GameObject gameObject, Color color)
+    {
+        var renderer = gameObject.GetComponent<Renderer>();
+        for (int i = 0; i < renderer.materials.Length; i++)
+        {
+            renderer.materials[i].EnableKeyword("_EMISSION");
+            renderer.materials[i].SetColor("_EmissionColor", color);
+        }
+    }
+
+    public static void DisableEmission(GameObject gameObject)
+    {
+        var renderer = gameObject.GetComponent<Renderer>();
+        for (int i = 0; i < renderer.materials.Length; i++)
+        {
+            renderer.materials[i].DisableKeyword("_EMISSION");
         }
     }
 }

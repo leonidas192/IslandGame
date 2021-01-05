@@ -10,6 +10,8 @@ public class AttackState : BaseState
         controllerReference.agentAnimations.OnFinishAttacking += TransitionBack;
         controllerReference.agentAnimations.TriggerAttackAnimation();
         controllerReference.detectionSystem.OnAttackSuccessful += PerformHit;
+
+        controllerReference.playerStatsManager.Stamina -= 20;
     }
     
     public void TransitionBack(){

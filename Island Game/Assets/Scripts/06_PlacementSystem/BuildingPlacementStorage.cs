@@ -18,8 +18,8 @@ public class BuildingPlacementStorage : MonoBehaviour, ISavable
             {
                 ID = structure.Data.ID,
                 posX = structure.transform.position.x,
-                posY = structure.transform.position.x,
-                posZ = structure.transform.position.x,
+                posY = structure.transform.position.y,
+                posZ = structure.transform.position.z,
                 rotationX = euler.x,
                 rotationY = euler.y,
                 rotationZ = euler.z,
