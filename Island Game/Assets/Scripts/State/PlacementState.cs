@@ -6,10 +6,9 @@ using UnityEngine;
 public class PlacementState : MovementState
 {
     PlacementHelper placementHelper;
-
     public override void EnterState(AgentController controller)
     {
-        Debug.Log("Entering Placement State");
+        Debug.Log("Entering placement state");
         base.EnterState(controller);
         CreateStructureToPlace();
     }
@@ -18,7 +17,7 @@ public class PlacementState : MovementState
     {
         placementHelper = ItemSpawnManager.instance.CreateStructure(controllerReference.inventorySystem.selectedStructureData);
         placementHelper.PrepareForMovement();
-        Debug.Log("Creating a structure to place");
+        Debug.Log("Creating a structure to palce");
     }
 
     public override void HandleEscapeInput()
@@ -26,19 +25,23 @@ public class PlacementState : MovementState
         Debug.Log("Exiting placementState");
         if (placementHelper.isActiveAndEnabled)
         {
-            DestroyPlaceObject();
+            DestroyPlacedObject();
         }
+
         controllerReference.TransitionToState(controllerReference.movementState);
     }
 
     public override void HandleJumpInput()
     {
-        
     }
 
     public override void HandleInventoryInput()
     {
-        
+    }
+
+    public override void HandleSecondaryAction()
+    {
+
     }
 
     public override void HandlePrimaryAction()
@@ -49,19 +52,13 @@ public class PlacementState : MovementState
             structureComponent.SetData(controllerReference.inventorySystem.selectedStructureData);
             placementHelper.enabled = false;
             controllerReference.inventorySystem.RemoveSelectedStructureFromInventory();
-            controllerReference.buildingPlacementStorage.SaveStructureReference(structureComponent);
+            controllerReference.buildingPlacementStroage.SaveStructureReference(structureComponent);
             HandleEscapeInput();
         }
     }
 
-    public override void HandleSecondaryAction()
-    {
-        
-    }
-
     public override void HandleHotbarInput(int hotbarKey)
     {
-       
     }
 
     public override void Update()
@@ -80,7 +77,7 @@ public class PlacementState : MovementState
                 fallingDelay -= Time.deltaTime;
                 return;
             }
-            DestroyPlaceObject();
+            DestroyPlacedObject();
             controllerReference.TransitionToState(controllerReference.fallingState);
         }
         else
@@ -89,9 +86,9 @@ public class PlacementState : MovementState
         }
     }
 
-    private void DestroyPlaceObject()
+    private void DestroyPlacedObject()
     {
-        Debug.Log("Destroying Placed Object");
+        Debug.Log("Destroying placed object");
         placementHelper.DestroyStructure();
     }
 }

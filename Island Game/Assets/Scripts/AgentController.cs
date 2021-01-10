@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +7,7 @@ public class AgentController : MonoBehaviour, ISavable
 {
     public AgentMovement movement;
     public PlayerInput input;
+
     public HumanoidAnimations agentAnimations;
 
     public InventorySystem inventorySystem;
@@ -22,7 +22,7 @@ public class AgentController : MonoBehaviour, ISavable
 
     public AudioSource audioSource;
 
-    public BuildingPlacementStorage buildingPlacementStorage;
+    public BuildingPlacementStorage buildingPlacementStroage;
 
     public Vector3? spawnPosition = null;
 
@@ -47,11 +47,11 @@ public class AgentController : MonoBehaviour, ISavable
         AssignInputListeners();
         detectionSystem = GetComponent<DetectionSystem>();
         gameManager = FindObjectOfType<GameManager>();
-
     }
 
     private void Start()
     {
+        spawnPosition = transform.position;
         inventorySystem.OnStructureUse += StructureUseCallback;
         craftingSystem.onCheckResourceAvailability += inventorySystem.CheckResourceAvailability;
         craftingSystem.onCheckInventoryFull += inventorySystem.CheckInventoryFull;
@@ -65,7 +65,7 @@ public class AgentController : MonoBehaviour, ISavable
         {
             inventorySystem.ToggleInventory();
             craftingSystem.ToggleCraftingUI();
-            if(Time.timeScale == 0)
+            if (Time.timeScale == 0)
             {
                 Time.timeScale = 1;
             }
@@ -80,12 +80,13 @@ public class AgentController : MonoBehaviour, ISavable
         input.OnToggleInventory += HandleInventoryInput;
         input.OnPrimaryAction += HandlePrimaryInput;
         input.OnSecondaryAction += HandleSecondaryInput;
-        input.OnEscapeKey += HandleEscapeKey;
+        input.OnEscapeKey += HendleEscapeKey;
     }
 
-   private void HandleEscapeKey()
+    private void HendleEscapeKey()
     {
         currentState.HandleEscapeInput();
+        
     }
 
     private void HandleSecondaryInput()
@@ -141,7 +142,8 @@ public class AgentController : MonoBehaviour, ISavable
         }
     }
 
-    public void PlayWeaponSwooshSound(){
+    public void PlayWeaponSwooshSOund()
+    {
         audioSource.PlayOneShot(AudioLibrary.instance.weaponWoosh);
     }
 
@@ -173,18 +175,18 @@ public class AgentController : MonoBehaviour, ISavable
             health = playerStatsManager.Health
         };
 
-        return JsonConvert.SerializeObject(data);
+        var dataToSave = JsonUtility.ToJson(data);
+        return dataToSave;
     }
 
     public void LoadJsonData(string jsonData)
     {
-        var data = JsonConvert.DeserializeObject<PlayerData>(jsonData);
+        var data = JsonUtility.FromJson<PlayerData>(jsonData);
         spawnPosition = new Vector3(data.playerPosition.x, data.playerPosition.y, data.playerPosition.z);
         RespawnPlayer();
         playerStatsManager.Health = data.health;
         playerStatsManager.Stamina = data.stamina;
     }
-
 }
 
 [Serializable]

@@ -1,17 +1,16 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingPlacementStorage : MonoBehaviour, ISavable
 {
-    List<Structure> playerStructure = new List<Structure>();
+    List<Structure> playerStructures = new List<Structure>();
 
     public string GetJsonDataToSave()
     {
         List<SavedStructureData> savedStructuresList = new List<SavedStructureData>();
-        foreach (var structure in playerStructure)
+        foreach (var structure in playerStructures)
         {
             var euler = structure.transform.rotation.eulerAngles;
             savedStructuresList.Add(new SavedStructureData
@@ -25,14 +24,18 @@ public class BuildingPlacementStorage : MonoBehaviour, ISavable
                 rotationZ = euler.z,
             });
         }
-        string data = JsonConvert.SerializeObject(savedStructuresList);
+        var dataToSave = new BuildingSavedData
+        {
+            savedStrcturesDataList = savedStructuresList
+        };
+        string data = JsonUtility.ToJson(dataToSave);
         return data;
     }
 
     public void LoadJsonData(string jsonData)
     {
-        List<SavedStructureData> savedStructuresList = JsonConvert.DeserializeObject<List<SavedStructureData>>(jsonData);
-        foreach (var data in savedStructuresList)
+        BuildingSavedData savedData = JsonUtility.FromJson<BuildingSavedData>(jsonData);
+        foreach (var data in savedData.savedStrcturesDataList)
         {
             var itemData = ItemDataManager.instance.GetItemData(data.ID);
             var structureToPlace = ItemSpawnManager.instance.CreateStructure((StructureItemSO)itemData);
@@ -49,7 +52,7 @@ public class BuildingPlacementStorage : MonoBehaviour, ISavable
 
     public void SaveStructureReference(Structure structure)
     {
-        playerStructure.Add(structure);
+        playerStructures.Add(structure);
     }
 }
 
@@ -58,10 +61,14 @@ public struct SavedStructureData
 {
     //position Vector3
     public float posX, posY, posZ;
-    //rotation Quaternion
+    //rotation Euler angles
     public float rotationX, rotationY, rotationZ;
     //ID
     public string ID;
 }
 
-
+[Serializable]
+public struct BuildingSavedData
+{
+    public List<SavedStructureData> savedStrcturesDataList;
+}
