@@ -9643,7 +9643,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1234677506}
-  m_LocalRotation: {x: -0.062008806, y: 0.0641852, z: 0.0039960244, w: 0.99600166}
+  m_LocalRotation: {x: -0.062008824, y: 0.06418524, z: 0.003996028, w: 0.99600166}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -20391,7 +20391,7 @@ MonoBehaviour:
   gameManager: {fileID: 0}
   itemSlot: {fileID: 751661172}
   audioSource: {fileID: 8296172669156150496}
-  buildingPlacementStroage: {fileID: 0}
+  buildingPlacementStroage: {fileID: 1264287511}
   playerStatsManager: {fileID: 8296172669156150497}
 --- !u!114 &8296172669156150489
 MonoBehaviour:
