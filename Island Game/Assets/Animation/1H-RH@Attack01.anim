@@ -96986,7 +96986,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.4
-    functionName: PlayWeaponSwooshSound
+    functionName: PlayWeaponSwooshSOund
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
